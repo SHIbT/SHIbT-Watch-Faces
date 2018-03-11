@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-
     defaultConfig {
         applicationId "uk.co.shibt.shibtsimpleanaloguewatchface"
         minSdkVersion 25
@@ -11,7 +10,6 @@ android {
         versionName "1.0"
         multiDexEnabled true
     }
-
     buildTypes {
         release {
             minifyEnabled true
@@ -22,14 +20,13 @@ android {
             applicationIdSuffix '.debug'
         }
     }
-
     flavorDimensions "main"
-
     productFlavors {
         dev {
             minSdkVersion 25
             versionNameSuffix "-dev"
             applicationIdSuffix '.debug'
+            targetSdkVersion 26
         }
         main {
             applicationId "uk.co.shibt.shibtsimpleanaloguewatchface"
@@ -39,6 +36,7 @@ android {
             versionName "1.0"
         }
     }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
