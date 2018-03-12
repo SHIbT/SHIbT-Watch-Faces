@@ -27,6 +27,7 @@ android {
             versionNameSuffix "-dev"
             applicationIdSuffix '.debug'
             targetSdkVersion 26
+            applicationId 'uk.co.shibt.shibtsimpleanaloguewatchface'
         }
         main {
             applicationId "uk.co.shibt.shibtsimpleanaloguewatchface"
