@@ -54,6 +54,87 @@ import java.util.concurrent.TimeUnit;
  */
 public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
+    private static final String TAG = "SimpleAnalogueWatchFace";
+
+    // Unique IDs for each complication. The settings activity that supports allowing users
+    // to select their complication data provider requires numbers to be >= 0.
+    private static final int BACKGROUND_COMPLICATION_ID = 0;
+
+    private static final int TOP_COMPLICATION_ID = 100;
+    private static final int BOTTOM_COMPLICATION_ID = 101;
+    private static final int LEFT_COMPLICATION_ID = 102;
+
+    // Background, Left and right complication IDs as array for Complication API.
+    private static final int[] COMPLICATION_IDS = {
+            BACKGROUND_COMPLICATION_ID, TOP_COMPLICATION_ID, BOTTOM_COMPLICATION_ID, LEFT_COMPLICATION_ID
+    };
+
+    // Left and right dial supported types.
+    private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
+            {ComplicationData.TYPE_LARGE_IMAGE},
+            {
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE
+            },
+            {
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE
+            },
+            {
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE
+            }
+    };
+
+    // Used by {@link ComplicationConfigRecyclerViewAdapter} to check if complication location
+    // is supported in settings config activity.
+    public static int getComplicationId(
+            ComplicationConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
+        // Add any other supported locations here.
+        switch (complicationLocation) {
+            case BACKGROUND:
+                return BACKGROUND_COMPLICATION_ID;
+            case TOP:
+                return TOP_COMPLICATION_ID;
+            case LEFT:
+                return LEFT_COMPLICATION_ID;
+            case BOTTOM:
+                return BOTTOM_COMPLICATION_ID;
+            default:
+                return -1;
+        }
+    }
+
+    // Used by {@link ComplicationConfigRecyclerViewAdapter} to retrieve all complication ids.
+    public static int[] getComplicationIds() {
+        return COMPLICATION_IDS;
+    }
+
+    // Used by {@link ComplicationConfigRecyclerViewAdapter} to see which complication types
+    // are supported in the settings config activity.
+    public static int[] getSupportedComplicationTypes(
+            ComplicationConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
+        // Add any other supported locations here.
+        switch (complicationLocation) {
+            case BACKGROUND:
+                return COMPLICATION_SUPPORTED_TYPES[0];
+            case TOP:
+                return COMPLICATION_SUPPORTED_TYPES[1];
+            case LEFT:
+                return COMPLICATION_SUPPORTED_TYPES[2];
+            case BOTTOM:
+                return COMPLICATION_SUPPORTED_TYPES[3];
+            default:
+                return new int[] {};
+        }
+    }
+
     /*
      * Updates rate in milliseconds for interactive mode. We update once a second to advance the
      * second hand.
@@ -715,7 +796,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 canvas.drawCircle(
                         mCenterX,
                         mCenterY,
-                        mCenterX-15,
+                        mCenterX-10,
                         mOuterCirclePaint);
             }
 
