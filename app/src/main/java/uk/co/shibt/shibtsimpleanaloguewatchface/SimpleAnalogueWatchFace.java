@@ -15,6 +15,8 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.wearable.complications.ComplicationData;
+import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.v7.graphics.Palette;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
@@ -23,8 +25,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
+import uk.co.shibt.shibtsimpleanaloguewatchface.R;
+import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigRecyclerViewAdapter;
 
 import static android.graphics.Typeface.MONOSPACE;
+import static android.graphics.Typeface.SANS_SERIF;
 
 import java.text.SimpleDateFormat;
 import java.lang.ref.WeakReference;
@@ -147,6 +152,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         private Paint mOuterCirclePaint;
         private Paint mBackgroundPaint;
         private Paint mTextPaint;
+        private Paint mTextPaintHours;
         private Paint mDateBoxPaint;
 
         private Bitmap mBackgroundBitmap;
@@ -190,18 +196,18 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
             mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
 
-            /* Extracts colors from background image to improve watchface style. */
-            Palette.from(mBackgroundBitmap).generate(new Palette.PaletteAsyncListener() {
-                @Override
-                public void onGenerated(Palette palette) {
-                    if (palette != null) {
-                        mWatchSecondColor = palette.getVibrantColor(Color.RED);
-                        mWatchHourMinuteColor = palette.getLightVibrantColor(Color.WHITE);
-                        mWatchHandShadowColor = palette.getDarkMutedColor(Color.DKGRAY);
-                        updateWatchHandStyle();
-                    }
-                }
-            });
+//            /* Extracts colors from background image to improve watchface style. */
+//            Palette.from(mBackgroundBitmap).generate(new Palette.PaletteAsyncListener() {
+//                @Override
+//                public void onGenerated(Palette palette) {
+//                    if (palette != null) {
+//                        mWatchSecondColor = palette.getVibrantColor(Color.RED);
+//                        mWatchHourMinuteColor = palette.getLightVibrantColor(Color.WHITE);
+//                        mWatchHandShadowColor = palette.getDarkMutedColor(Color.DKGRAY);
+//                        updateWatchHandStyle();
+//                    }
+//                }
+//            });
         }
 
         private void initializeWatchFace() {
@@ -277,6 +283,13 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             mTextPaint.setAntiAlias(true);
             mTextPaint.setTextAlign(Paint.Align.LEFT);
             mTextPaint.setColor(mWatchHourMinuteColor);
+
+            mTextPaintHours = new Paint();
+            mTextPaintHours.setTypeface(SANS_SERIF);
+            mTextPaintHours.setTextSize(20f);
+            mTextPaintHours.setAntiAlias(true);
+            mTextPaintHours.setTextAlign(Paint.Align.CENTER);
+            mTextPaintHours.setColor(mWatchHourMinuteColor);
 
             mDateBoxPaint = new Paint();
             mDateBoxPaint.setColor(mWatchHourMinuteColor);
@@ -574,33 +587,61 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             * Hour Tick
             */
             if(!mAmbient){
-                for (int textIndex = 1; textIndex < 3; textIndex++) {
+                for (int textIndex = 1; textIndex < 2; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)), mCenterY + innerY,
-                            mTextPaint);
+                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)+5), mCenterY + innerY,
+                            mTextPaintHours);
                 }
-                for (int textIndex = 4; textIndex < 6; textIndex++) {
+                for (int textIndex = 2; textIndex < 3; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),mCenterX + innerX, ((mCenterY + innerY)+15),
-                            mTextPaint);
+                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)+7), mCenterY + innerY,
+                            mTextPaintHours);
                 }
-                for (int textIndex = 7; textIndex < 9; textIndex++) {
+                for (int textIndex = 4; textIndex < 5; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX) -15), ((mCenterY + innerY)+15),
-                            mTextPaint);
+                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)+7), ((mCenterY + innerY)+15),
+                            mTextPaintHours);
                 }
-                for (int textIndex = 10; textIndex < 12; textIndex++) {
+                for (int textIndex = 5; textIndex < 6; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)-15), mCenterY + innerY,
-                            mTextPaint);
+                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)+5), ((mCenterY + innerY)+15),
+                            mTextPaintHours);
+                }
+                for (int textIndex = 7; textIndex < 8; textIndex++) {
+                    float tickRot = (float) (textIndex * Math.PI * 2 / 12);
+                    float innerX = (float) Math.sin(tickRot) * innerTextRadius;
+                    float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
+                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)-2), ((mCenterY + innerY)+15),
+                            mTextPaintHours);
+                }
+                for (int textIndex = 8; textIndex < 9; textIndex++) {
+                    float tickRot = (float) (textIndex * Math.PI * 2 / 12);
+                    float innerX = (float) Math.sin(tickRot) * innerTextRadius;
+                    float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
+                    canvas.drawText(String.valueOf(textIndex), ((mCenterX + innerX) - 10), ((mCenterY + innerY)+15),
+                            mTextPaintHours);
+                }
+                for (int textIndex = 10; textIndex < 11; textIndex++) {
+                    float tickRot = (float) (textIndex * Math.PI * 2 / 12);
+                    float innerX = (float) Math.sin(tickRot) * innerTextRadius;
+                    float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
+                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX) -7), ((mCenterY + innerY)+5),
+                            mTextPaintHours);
+                }
+                for (int textIndex = 11; textIndex < 12; textIndex++) {
+                    float tickRot = (float) (textIndex * Math.PI * 2 / 12);
+                    float innerX = (float) Math.sin(tickRot) * innerTextRadius;
+                    float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
+                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)-5), mCenterY + innerY,
+                            mTextPaintHours);
                 }
             } else {
 
