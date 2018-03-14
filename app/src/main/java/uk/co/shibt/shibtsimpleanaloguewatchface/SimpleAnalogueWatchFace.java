@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -22,6 +23,7 @@ import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
@@ -220,6 +222,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         private int mBackgroundPaintColor;
         private int mWatchWhiteColor;
         private int mWatchOuterCircleColor;
+        private int mBackgroundColor;
 
         private Paint mHourPaint;
         private Paint mMinutePaint;
@@ -238,9 +241,24 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         private Bitmap mBackgroundBitmap;
         private Bitmap mGrayBackgroundBitmap;
 
+        /* Maps active complication ids to the data for that complication. Note: Data will only be
+         * present if the user has chosen a provider via the settings activity for the watch face.
+         */
+        private SparseArray<ComplicationData> mActiveComplicationDataSparseArray;
+
+        /* Maps complication ids to corresponding ComplicationDrawable that renders the
+         * the complication data on the watch face.
+         */
+        private SparseArray<ComplicationDrawable> mComplicationDrawableSparseArray;
+
         private boolean mAmbient;
         private boolean mLowBitAmbient;
         private boolean mBurnInProtection;
+
+        SharedPreferences mSharedPref;
+
+        private boolean mUnreadNotificationsPreference;
+        private int mNumberOfUnreadNotifications = 0;
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -266,17 +284,19 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             mWatchMinuteTickColor = getColor(R.color.wl_White);
             mBackgroundPaintColor = getColor(R.color.wl_Black);
 
-            initializeBackground();
+            loadSavedPreferences();
+            initializeComplicationsAndBackground();
+//            initializeBackground();
             initializeWatchFace();
         }
 
-        private void initializeBackground() {
+        /*private void initializeBackground() {
             mBackgroundPaint = new Paint();
             mBackgroundPaint.setColor(mBackgroundPaintColor);
 
             mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
 
-//            /* Extracts colors from background image to improve watchface style. */
+//            *//* Extracts colors from background image to improve watchface style. *//*
 //            Palette.from(mBackgroundBitmap).generate(new Palette.PaletteAsyncListener() {
 //                @Override
 //                public void onGenerated(Palette palette) {
@@ -288,8 +308,76 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 //                    }
 //                }
 //            });
+        }*/
+        // Pulls all user's preferences for watch face appearance.
+        private void loadSavedPreferences() {
+
+            String backgroundColorResourceName =
+                    getApplicationContext().getString(R.string.saved_background_color);
+//            mBackgroundPaint = new Paint();
+//            mBackgroundPaint.setColor(mBackgroundPaintColor);
+
+            mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+
+            mBackgroundColor = mSharedPref.getInt(backgroundColorResourceName, Color.BLACK);
+
+            String markerColorResourceName =
+                    getApplicationContext().getString(R.string.saved_marker_color);
+
+            // Set defaults for colors
+            mWatchSecondColor = mSharedPref.getInt(markerColorResourceName, Color.RED);
+
+            if (mBackgroundColor == Color.WHITE) {
+                mWatchHourMinuteColor = Color.BLACK;
+                mWatchHandShadowColor = Color.WHITE;
+            } else {
+                mWatchHourMinuteColor = Color.WHITE;
+                mWatchHandShadowColor = Color.BLACK;
+            }
+
+            String unreadNotificationPreferenceResourceName =
+                    getApplicationContext().getString(R.string.saved_unread_notifications_pref);
+
+            mUnreadNotificationsPreference =
+                    mSharedPref.getBoolean(unreadNotificationPreferenceResourceName, true);
         }
 
+        private void initializeComplicationsAndBackground() {
+
+            // Initialize background color (in case background complication is inactive).
+            mBackgroundPaint = new Paint();
+            mBackgroundPaint.setColor(mBackgroundColor);
+
+            mActiveComplicationDataSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
+
+            // Creates a ComplicationDrawable for each location where the user can render a
+            // complication on the watch face. In this watch face, we create one for left, right,
+            // and background, but you could add many more.
+            ComplicationDrawable topComplicationDrawable =
+                    new ComplicationDrawable(getApplicationContext());
+
+            ComplicationDrawable bottomComplicationDrawable =
+                    new ComplicationDrawable(getApplicationContext());
+
+            ComplicationDrawable leftComplicationDrawable =
+                    new ComplicationDrawable(getApplicationContext());
+
+            ComplicationDrawable backgroundComplicationDrawable =
+                    new ComplicationDrawable(getApplicationContext());
+
+            // Adds new complications to a SparseArray to simplify setting styles and ambient
+            // properties for all complications, i.e., iterate over them all.
+            mComplicationDrawableSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
+
+            mComplicationDrawableSparseArray.put(TOP_COMPLICATION_ID, topComplicationDrawable);
+            mComplicationDrawableSparseArray.put(BOTTOM_COMPLICATION_ID, bottomComplicationDrawable);
+            mComplicationDrawableSparseArray.put(LEFT_COMPLICATION_ID, leftComplicationDrawable);
+            mComplicationDrawableSparseArray.put(
+                    BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
+
+            setComplicationsActiveAndAmbientColors(mWatchHourTickColor);
+            setActiveComplications(COMPLICATION_IDS);
+        }
         private void initializeWatchFace() {
 
             mHourPaint = new Paint();
@@ -379,17 +467,53 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             mDateBoxPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
         }
 
+        private void setComplicationsActiveAndAmbientColors(int primaryComplicationColor) {
+            int complicationId;
+            ComplicationDrawable complicationDrawable;
+
+            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
+                complicationId = COMPLICATION_IDS[i];
+                complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
+
+                if (complicationId == BACKGROUND_COMPLICATION_ID) {
+                    // It helps for the background color to be black in case the image used for the
+                    // watch face's background takes some time to load.
+                    complicationDrawable.setBackgroundColorActive(Color.BLACK);
+                } else {
+                    // Active mode colors.
+                    complicationDrawable.setBorderColorActive(primaryComplicationColor);
+                    complicationDrawable.setRangedValuePrimaryColorActive(primaryComplicationColor);
+
+                    // Ambient mode colors.
+                    complicationDrawable.setBorderColorAmbient(Color.WHITE);
+                    complicationDrawable.setRangedValuePrimaryColorAmbient(Color.WHITE);
+                }
+            }
+        }
+
         @Override
         public void onDestroy() {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             super.onDestroy();
         }
 
+        
         @Override
         public void onPropertiesChanged(Bundle properties) {
             super.onPropertiesChanged(properties);
             mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
             mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+
+            // Updates complications to properly render in ambient mode based on the
+            // screen's capabilities.
+            ComplicationDrawable complicationDrawable;
+
+            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
+                complicationDrawable = mComplicationDrawableSparseArray.get(COMPLICATION_IDS[i]);
+
+                complicationDrawable.setLowBitAmbient(mLowBitAmbient);
+                complicationDrawable.setBurnInProtection(mBurnInProtection);
+            }
         }
 
         @Override
