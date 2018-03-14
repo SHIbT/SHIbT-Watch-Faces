@@ -497,6 +497,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             super.onDestroy();
         }
 
+        
         @Override
         public void onPropertiesChanged(Bundle properties) {
             super.onPropertiesChanged(properties);
