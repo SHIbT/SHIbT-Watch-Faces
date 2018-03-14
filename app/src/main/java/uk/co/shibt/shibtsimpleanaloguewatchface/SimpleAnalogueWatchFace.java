@@ -91,7 +91,6 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                     ComplicationData.TYPE_SMALL_IMAGE
             }
     };
-
     // Used by {@link ComplicationConfigRecyclerViewAdapter} to check if complication location
     // is supported in settings config activity.
     public static int getComplicationId(
