@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/simple-analogue-watch-face.iml" filepath="$PROJECT_DIR$/simple-analogue-watch-face.iml" />
-      <module fileurl="file://F:\Android\DEVELOPMENT\simple-analogue-watch-face\simple-analogue-watch-face.iml" filepath="F:\Android\DEVELOPMENT\simple-analogue-watch-face\simple-analogue-watch-face.iml" />
     </modules>
   </component>
 </project>
