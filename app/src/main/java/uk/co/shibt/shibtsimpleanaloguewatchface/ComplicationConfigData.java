@@ -104,14 +104,14 @@ public class ComplicationConfigData {
                         ColorSelectionActivity.class);
         settingsConfigData.add(backgroundColorConfigItem);
 
-        // Data for 'Unread Notifications' UX (toggle) in settings Activity.
+        /*// Data for 'Unread Notifications' UX (toggle) in settings Activity.
         ConfigItemType unreadNotificationsConfigItem =
                 new UnreadNotificationConfigItem(
                         context.getString(R.string.config_unread_notifications_label),
                         R.drawable.ic_notifications_white_24dp,
                         R.drawable.ic_notifications_off_white_24dp,
                         R.string.saved_unread_notifications_pref);
-        settingsConfigData.add(unreadNotificationsConfigItem);
+        settingsConfigData.add(unreadNotificationsConfigItem);*/
 
         // Data for background complications UX in settings Activity.
         ConfigItemType backgroundImageComplicationConfigItem =
@@ -212,45 +212,45 @@ public class ComplicationConfigData {
     /**
      * Data for Unread Notification preference picker item in RecyclerView.
      */
-    public static class UnreadNotificationConfigItem  implements ConfigItemType {
-
-        private String name;
-        private int iconEnabledResourceId;
-        private int iconDisabledResourceId;
-        private int sharedPrefId;
-
-        UnreadNotificationConfigItem(
-                String name,
-                int iconEnabledResourceId,
-                int iconDisabledResourceId,
-                int sharedPrefId) {
-            this.name = name;
-            this.iconEnabledResourceId = iconEnabledResourceId;
-            this.iconDisabledResourceId = iconDisabledResourceId;
-            this.sharedPrefId = sharedPrefId;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getIconEnabledResourceId() {
-            return iconEnabledResourceId;
-        }
-
-        public int getIconDisabledResourceId() {
-            return iconDisabledResourceId;
-        }
-
-        public int getSharedPrefId() {
-            return sharedPrefId;
-        }
-
-        @Override
-        public int getConfigType() {
-            return ComplicationConfigRecyclerViewAdapter.TYPE_UNREAD_NOTIFICATION_CONFIG;
-        }
-    }
+//    public static class UnreadNotificationConfigItem  implements ConfigItemType {
+//
+//        private String name;
+//        private int iconEnabledResourceId;
+//        private int iconDisabledResourceId;
+//        private int sharedPrefId;
+//
+//        UnreadNotificationConfigItem(
+//                String name,
+//                int iconEnabledResourceId,
+//                int iconDisabledResourceId,
+//                int sharedPrefId) {
+//            this.name = name;
+//            this.iconEnabledResourceId = iconEnabledResourceId;
+//            this.iconDisabledResourceId = iconDisabledResourceId;
+//            this.sharedPrefId = sharedPrefId;
+//        }
+//
+//        public String getName() {
+//            return name;
+//        }
+//
+//        public int getIconEnabledResourceId() {
+//            return iconEnabledResourceId;
+//        }
+//
+//        public int getIconDisabledResourceId() {
+//            return iconDisabledResourceId;
+//        }
+//
+//        public int getSharedPrefId() {
+//            return sharedPrefId;
+//        }
+//
+//        /*@Override
+//        public int getConfigType() {
+//            return ComplicationConfigRecyclerViewAdapter.TYPE_UNREAD_NOTIFICATION_CONFIG;
+//        }*/
+//    }
 
     /**
      * Data for background image complication picker item in RecyclerView.

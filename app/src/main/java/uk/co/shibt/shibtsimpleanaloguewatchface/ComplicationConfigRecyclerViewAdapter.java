@@ -35,7 +35,7 @@ import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.ColorConf
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.ConfigItemType;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.MoreOptionsConfigItem;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.PreviewAndComplicationsConfigItem;
-import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.UnreadNotificationConfigItem;
+//import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.UnreadNotificationConfigItem;
 import uk.co.shibt.shibtsimpleanaloguewatchface.SimpleAnalogueWatchFace;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
     public static final int TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG = 0;
     public static final int TYPE_MORE_OPTIONS = 1;
     public static final int TYPE_COLOR_CONFIG = 2;
-    public static final int TYPE_UNREAD_NOTIFICATION_CONFIG = 3;
+//    public static final int TYPE_UNREAD_NOTIFICATION_CONFIG = 3;
     public static final int TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG = 4;
 
     // ComponentName associated with watch face service (service that renders watch face). Used
@@ -117,7 +117,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
 
         mSharedPref =
                 context.getSharedPreferences(
-                        context.getString(R.string.analog_complication_preference_file_key),
+                        context.getString(R.string.complication_preference_file_key),
                         Context.MODE_PRIVATE);
 
         // Initialization of code to retrieve active complication data for the watch face.
@@ -163,7 +163,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                                         .inflate(R.layout.config_list_color_item, parent, false));
                 break;
 
-            case TYPE_UNREAD_NOTIFICATION_CONFIG:
+            /*case TYPE_UNREAD_NOTIFICATION_CONFIG:
                 viewHolder =
                         new UnreadNotificationViewHolder(
                                 LayoutInflater.from(parent.getContext())
@@ -171,7 +171,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                                                 R.layout.config_list_unread_notif_item,
                                                 parent,
                                                 false));
-                break;
+                break;*/
 
             case TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG:
                 viewHolder =
@@ -234,7 +234,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                 colorPickerViewHolder.setLaunchActivityToSelectColor(activity);
                 break;
 
-            case TYPE_UNREAD_NOTIFICATION_CONFIG:
+            /*case TYPE_UNREAD_NOTIFICATION_CONFIG:
                 UnreadNotificationViewHolder unreadViewHolder =
                         (UnreadNotificationViewHolder) viewHolder;
 
@@ -251,7 +251,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                         unreadEnabledIconResourceId, unreadDisabledIconResourceId);
                 unreadViewHolder.setName(unreadName);
                 unreadViewHolder.setSharedPrefId(unreadSharedPrefId);
-                break;
+                break;*/
 
             case TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG:
                 BackgroundComplicationViewHolder backgroundComplicationViewHolder =
