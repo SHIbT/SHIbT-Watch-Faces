@@ -570,7 +570,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 mSecondPaint.setColor(mWatchHourTickColor);
                 mHourTickPaint.setColor(mWatchHourTickColor);
                 mMinuteTickPaint.setColor(mWatchMinuteTickColor);
-                mInnerCirclePaint.setColor(mWatchInnerCircleColor);
+                mInnerCirclePaint.setColor(getColor(R.color.wl_White));
                 mInnerRedCirclePaint.setColor(mWatchHourTickColor);
                 mOuterCirclePaint.setColor(mWatchOuterCircleColor);
                 mTickAndCirclePaint.setColor(mWatchMinuteTickColor);
@@ -583,7 +583,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 mHourTickPaint.setAntiAlias(true);
                 mMinuteTickPaint.setAntiAlias(true);
 //                mInnerCirclePaint.setAntiAlias(true);
-                mInnerRedCirclePaint.setAntiAlias(true);
+//                mInnerRedCirclePaint.setAntiAlias(true);
                 mOuterCirclePaint.setAntiAlias(true);
                 mTickAndCirclePaint.setAntiAlias(true);
                 mTextPaint.setAntiAlias(true);
@@ -596,7 +596,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 mHourTickPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mMinuteTickPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 //                mInnerCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mInnerRedCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+//                mInnerRedCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mOuterCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mTextPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
