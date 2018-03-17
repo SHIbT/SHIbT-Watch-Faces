@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.wear.widget.WearableRecyclerView;
 import android.support.wearable.complications.ComplicationProviderInfo;
 import android.support.wearable.complications.ProviderChooserIntent;
-import android.util.Log;
 
 import uk.co.shibt.shibtsimpleanaloguewatchface.R;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData;
@@ -46,8 +45,6 @@ public class ComplicationConfigActivity extends Activity{
 
         mWearableRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Improves performance because we know changes in content do not change the layout size of
-        // the RecyclerView.
         mWearableRecyclerView.setHasFixedSize(true);
 
         mWearableRecyclerView.setAdapter(mAdapter);
@@ -62,16 +59,12 @@ public class ComplicationConfigActivity extends Activity{
             // Retrieves information for selected Complication provider.
             ComplicationProviderInfo complicationProviderInfo =
                     data.getParcelableExtra(ProviderChooserIntent.EXTRA_PROVIDER_INFO);
-            Log.d(TAG, "Provider: " + complicationProviderInfo);
 
-            // Updates preview with new complication information for selected complication id.
-            // Note: complication id is saved and tracked in the adapter class.
             mAdapter.updateSelectedComplication(complicationProviderInfo);
 
         } else if (requestCode == UPDATE_COLORS_CONFIG_REQUEST_CODE
                 && resultCode == RESULT_OK) {
 
-            // Updates highlight and background colors based on the user preference.
             mAdapter.updatePreviewColors();
         }
     }

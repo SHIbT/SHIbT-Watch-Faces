@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.support.wearable.view.CircledImageView;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +35,6 @@ public class ColorSelectionRecyclerViewAdapter extends
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder(): viewType: " + viewType);
 
         RecyclerView.ViewHolder viewHolder =
                 new ColorViewHolder(LayoutInflater.from(parent.getContext())
@@ -45,7 +44,6 @@ public class ColorSelectionRecyclerViewAdapter extends
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        Log.d(TAG, "Element " + position + " set.");
 
         Integer color = mColorOptionsDataSet.get(position);
         ColorViewHolder colorViewHolder = (ColorViewHolder) viewHolder;
@@ -57,11 +55,7 @@ public class ColorSelectionRecyclerViewAdapter extends
         return mColorOptionsDataSet.size();
     }
 
-    /**
-     * Displays color options for an item on the watch face and saves value to the
-     * SharedPreference associated with it.
-     */
-    public class ColorViewHolder extends RecyclerView.ViewHolder
+     public class ColorViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
         private CircledImageView mColorCircleImageView;
@@ -80,8 +74,6 @@ public class ColorSelectionRecyclerViewAdapter extends
         public void onClick (View view) {
             int position = getAdapterPosition();
             Integer color = mColorOptionsDataSet.get(position);
-
-            Log.d(TAG, "Color: " + color + " onClick() position: " + position);
 
             Activity activity = (Activity) view.getContext();
 

@@ -10,7 +10,6 @@ import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.ComplicationManager;
 import android.support.wearable.complications.ComplicationProviderService;
 import android.support.wearable.complications.ComplicationText;
-import android.util.Log;
 
 import java.util.Locale;
 
@@ -27,7 +26,6 @@ public class IncrementingNumberComplicationProviderService extends ComplicationP
     @Override
     public void onComplicationActivated(
             int complicationId, int dataType, ComplicationManager complicationManager) {
-        Log.d(TAG, "onComplicationActivated(): " + complicationId);
     }
 
     /*
@@ -43,7 +41,6 @@ public class IncrementingNumberComplicationProviderService extends ComplicationP
     @Override
     public void onComplicationUpdate(
             int complicationId, int dataType, ComplicationManager complicationManager) {
-        Log.d(TAG, "onComplicationUpdate() id: " + complicationId);
 
         // Create Tap Action so that the user can trigger an update by tapping the complication.
         ComponentName thisProvider = new ComponentName(this, getClass());
@@ -89,9 +86,6 @@ public class IncrementingNumberComplicationProviderService extends ComplicationP
                                 .build();
                 break;
             default:
-                if (Log.isLoggable(TAG, Log.WARN)) {
-                    Log.w(TAG, "Unexpected complication type " + dataType);
-                }
         }
 
         if (complicationData != null) {
@@ -109,6 +103,6 @@ public class IncrementingNumberComplicationProviderService extends ComplicationP
      */
     @Override
     public void onComplicationDeactivated(int complicationId) {
-        Log.d(TAG, "onComplicationDeactivated(): " + complicationId);
+
     }
 }
