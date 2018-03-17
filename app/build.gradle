@@ -1,49 +1,61 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    signingConfigs {
+        release {
+            keyAlias 'SHIbTMainDevelopmentKey'
+            keyPassword 'MusH210RooM'
+            storeFile file('F:/Android/DEVELOPMENT/KeyStore/Android Key Store.jks')
+            storePassword 'MusH210RooM'
+        }
+        debug {
+            keyAlias 'SHIbTMainDevelopmentKey'
+            keyPassword 'MusH210RooM'
+            storeFile file('F:/Android/DEVELOPMENT/KeyStore/Android Key Store.jks')
+            storePassword 'MusH210RooM'
+        }
+    }
+    compileSdkVersion 27
     defaultConfig {
         applicationId "uk.co.shibt.shibtsimpleanaloguewatchface"
         minSdkVersion 25
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
-        versionName "1.1.1"
+        versionName "1.1.21"
         multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig getSigningConfig()
+            signingConfig signingConfigs.release
             applicationVariants.all { variant ->
                 variant.outputs.all {
-                    def date = new Date();
+                    def date = new Date()
                     def formattedDate = date.format('yyyyMMddHHmmss')
-                    outputFileName = "SHIbT-Simple-Analogue-${versionName}${formattedDate}.apk"
+                    outputFileName = "SHIbT-Simple-Analogue-${versionName}-${formattedDate}.apk"
                 }
             }
         }
         debug {
             versionNameSuffix "-dev"
             applicationIdSuffix '.debug'
-            signingConfig getSigningConfig()
+            signingConfig signingConfigs.debug
         }
     }
     flavorDimensions "main"
     productFlavors {
         dev {
-            targetSdkVersion 26
+            targetSdkVersion 27
             versionCode 1
-            versionName "1.1"
+
             applicationId 'uk.co.shibt.shibtsimpleanaloguewatchface'
 
         }
         main {
             applicationId "uk.co.shibt.shibtsimpleanaloguewatchface"
             minSdkVersion 25
-            targetSdkVersion 26
-            versionCode 1
-            versionName "1.1.1"
+            targetSdkVersion 27
         }
     }
     buildToolsVersion '27.0.3'
@@ -51,12 +63,12 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:wear:26.1.0'
+    implementation 'com.android.support:wear:27.1.0'
     implementation 'com.google.android.support:wearable:2.2.0'
     implementation 'com.google.android.gms:play-services-wearable:11.8.0'
-    implementation 'com.android.support:percent:26.1.0'
-    implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
-    implementation 'com.android.support:palette-v7:26.1.0'
+    implementation 'com.android.support:percent:27.1.0'
+    implementation 'com.android.support:support-v4:27.1.0'
+    implementation 'com.android.support:recyclerview-v7:27.1.0'
+    implementation 'com.android.support:palette-v7:27.1.0'
     compileOnly 'com.google.android.wearable:wearable:2.2.0'
 }
