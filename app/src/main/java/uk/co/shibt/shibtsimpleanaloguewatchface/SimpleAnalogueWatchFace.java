@@ -62,7 +62,6 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                     ComplicationData.TYPE_SHORT_TEXT,
                     ComplicationData.TYPE_SMALL_IMAGE
             },
-
             {
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
@@ -466,16 +465,16 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
         private void updateWatchHandStyle() {
             if (mAmbient) {
-                mHourPaint.setColor(mWatchHandShadowColor);
-                mMinutePaint.setColor(mWatchHandShadowColor);
+                mHourPaint.setColor(mWatchWhiteColor);
+                mMinutePaint.setColor(mWatchWhiteColor);
                 mSecondPaint.setColor(mWatchHandShadowColor);
-                mHourTickPaint.setColor(mWatchHandShadowColor);
+                mHourTickPaint.setColor(mWatchWhiteColor);
                 mMinuteTickPaint.setColor(mWatchHandShadowColor);
-                mInnerCirclePaint.setColor(mWatchHandShadowColor);
+                mInnerCirclePaint.setColor(mWatchWhiteColor);
                 mInnerRedCirclePaint.setColor(mWatchHandShadowColor);
                 mOuterCirclePaint.setColor(mWatchHandShadowColor);
                 mTickAndCirclePaint.setColor(mWatchHandShadowColor);
-                mTextPaint.setColor(mWatchHandShadowColor);
+                mTextPaint.setColor(mWatchWhiteColor);
                 mTextPaintHours.setColor(mWatchHandShadowColor);
                 mDateBoxPaint.setColor(mWatchHandShadowColor);
 
@@ -550,9 +549,9 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
             if (mMuteMode != inMuteMode) {
                 mMuteMode = inMuteMode;
-                mHourPaint.setAlpha(inMuteMode ? 80 : 255);
-                mMinutePaint.setAlpha(inMuteMode ? 80 : 255);
-                mSecondPaint.setAlpha(inMuteMode ? 50 : 255);
+                mHourPaint.setAlpha(inMuteMode ? 100 : 255);
+                mMinutePaint.setAlpha(inMuteMode ? 100 : 255);
+                mSecondPaint.setAlpha(inMuteMode ? 100 : 255);
                 invalidate();
             }
         }
