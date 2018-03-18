@@ -14,11 +14,9 @@ import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData;
 
 public class ColorSelectionActivity extends Activity{
 
-    private static final String TAG = ColorSelectionActivity.class.getSimpleName();
-
     static final String EXTRA_SHARED_PREF =
             "uk.co.shibt.shibtsimpleanaloguewatchface.EXTRA_SHARED_PREF";
-
+    private static final String TAG = ColorSelectionActivity.class.getSimpleName();
     private WearableRecyclerView mConfigAppearanceWearableRecyclerView;
 
     private ColorSelectionRecyclerViewAdapter mColorSelectionRecyclerViewAdapter;
@@ -36,7 +34,7 @@ public class ColorSelectionActivity extends Activity{
                 ComplicationConfigData.getColorOptionsDataSet());
 
         mConfigAppearanceWearableRecyclerView =
-                (WearableRecyclerView) findViewById(R.id.wearable_recycler_view);
+                findViewById(R.id.wearable_recycler_view);
 
         // Aligns the first and last items on the list vertically centered on the screen.
         mConfigAppearanceWearableRecyclerView.setEdgeItemsCenteringEnabled(true);

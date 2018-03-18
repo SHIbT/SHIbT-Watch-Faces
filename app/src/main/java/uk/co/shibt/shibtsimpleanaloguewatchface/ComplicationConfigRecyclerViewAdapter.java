@@ -29,12 +29,10 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import uk.co.shibt.shibtsimpleanaloguewatchface.R;
-import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.BackgroundComplicationConfigItem;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.ColorConfigItem;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.ConfigItemType;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.MoreOptionsConfigItem;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.PreviewAndComplicationsConfigItem;
-//import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.UnreadNotificationConfigItem;
 import uk.co.shibt.shibtsimpleanaloguewatchface.SimpleAnalogueWatchFace;
 
 import java.util.ArrayList;
@@ -45,27 +43,13 @@ import java.util.concurrent.Executors;
  */
 
 public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-    private static final String TAG = "CompConfigAdapter";
-
-    /**
-     * Used by associated watch face ({@link SimpleAnalogueWatchFace}) to let this
-     * adapter know which complication locations are supported, their ids, and supported
-     * complication data types.
-     */
-    public enum ComplicationLocation {
-        BACKGROUND,
-        LEFT,
-        RIGHT,
-        TOP,
-        BOTTOM
-    }
-
     public static final int TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG = 0;
     public static final int TYPE_MORE_OPTIONS = 1;
     public static final int TYPE_COLOR_CONFIG = 2;
 //    public static final int TYPE_UNREAD_NOTIFICATION_CONFIG = 3;
     public static final int TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG = 4;
-
+    private static final String TAG = "CompConfigAdapter";
+    SharedPreferences mSharedPref;
     // ComponentName associated with watch face service (service that renders watch face). Used
     // to retrieve complication information.
     private ComponentName mWatchFaceComponentName;
@@ -73,20 +57,14 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
     private ArrayList<ConfigItemType> mSettingsDataSet;
 
     private Context mContext;
-
-    SharedPreferences mSharedPref;
-
     // Selected complication id by user.
     private int mSelectedComplicationId;
-
     private int mBackgroundComplicationId;
     private int mLeftComplicationId;
     private int mTopComplicationId;
     private int mBottomComplicationId;
-
     // Required to retrieve complication data from watch face for preview.
     private ProviderInfoRetriever mProviderInfoRetriever;
-
     // Maintains reference view holder to dynamically update watch face preview. Used instead of
     // notifyItemChanged(int position) to avoid flicker and re-inflating the view.
     private PreviewAndComplicationsViewHolder mPreviewAndComplicationsViewHolder;
@@ -161,25 +139,6 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                                         .inflate(R.layout.config_list_color_item, parent, false));
                 break;
 
-            /*case TYPE_UNREAD_NOTIFICATION_CONFIG:
-                viewHolder =
-                        new UnreadNotificationViewHolder(
-                                LayoutInflater.from(parent.getContext())
-                                        .inflate(
-                                                R.layout.config_list_unread_notif_item,
-                                                parent,
-                                                false));
-                break;*/
-
-            case TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG:
-                viewHolder =
-                        new BackgroundComplicationViewHolder(
-                                LayoutInflater.from(parent.getContext())
-                                        .inflate(
-                                                R.layout.config_list_background_complication_item,
-                                                parent,
-                                                false));
-                break;
         }
 
         return viewHolder;
@@ -231,19 +190,6 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                 colorPickerViewHolder.setLaunchActivityToSelectColor(activity);
                 break;
 
-            case TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG:
-                BackgroundComplicationViewHolder backgroundComplicationViewHolder =
-                        (BackgroundComplicationViewHolder) viewHolder;
-
-                BackgroundComplicationConfigItem backgroundComplicationConfigItem =
-                        (BackgroundComplicationConfigItem) configItemType;
-
-                int backgroundIconResourceId = backgroundComplicationConfigItem.getIconResourceId();
-                String backgroundName = backgroundComplicationConfigItem.getName();
-
-                backgroundComplicationViewHolder.setIcon(backgroundIconResourceId);
-                backgroundComplicationViewHolder.setName(backgroundName);
-                break;
         }
     }
 
@@ -282,6 +228,19 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
         }
     }
 
+    /**
+     * Used by associated watch face ({@link SimpleAnalogueWatchFace}) to let this
+     * adapter know which complication locations are supported, their ids, and supported
+     * complication data types.
+     */
+    public enum ComplicationLocation {
+        BACKGROUND,
+        LEFT,
+        RIGHT,
+        TOP,
+        BOTTOM
+    }
+
     public class PreviewAndComplicationsViewHolder extends RecyclerView.ViewHolder
             implements OnClickListener {
 
@@ -305,7 +264,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
             super(view);
 
             mWatchFaceBackgroundPreviewImageView =
-                    (ImageView) view.findViewById(R.id.watch_face_background);
+                    view.findViewById(R.id.watch_face_background);
             mWatchFaceArmsAndTicksView = view.findViewById(R.id.watch_face_arms_and_ticks);
 
             // In our case, just the second arm.
@@ -313,19 +272,19 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
 
             // Sets up left complication preview.
             mLeftComplicationBackground =
-                    (ImageView) view.findViewById(R.id.left_complication_background);
-            mLeftComplication = (ImageButton) view.findViewById(R.id.left_complication);
+                    view.findViewById(R.id.left_complication_background);
+            mLeftComplication = view.findViewById(R.id.left_complication);
             mLeftComplication.setOnClickListener(this);
 
             mTopComplicationBackground =
-                    (ImageView) view.findViewById(R.id.top_complication_background);
-            mTopComplication = (ImageButton) view.findViewById(R.id.top_complication);
+                    view.findViewById(R.id.top_complication_background);
+            mTopComplication = view.findViewById(R.id.top_complication);
             mTopComplication.setOnClickListener(this);
 
             // Sets up right complication preview.
             mBottomComplicationBackground =
-                    (ImageView) view.findViewById(R.id.bottom_complication_background);
-            mBottomComplication = (ImageButton) view.findViewById(R.id.bottom_complication);
+                    view.findViewById(R.id.bottom_complication_background);
+            mBottomComplication = view.findViewById(R.id.bottom_complication);
             mBottomComplication.setOnClickListener(this);
         }
 
@@ -536,7 +495,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
 
         public MoreOptionsViewHolder(View view) {
             super(view);
-            mMoreOptionsImageView = (ImageView) view.findViewById(R.id.more_options_image_view);
+            mMoreOptionsImageView = view.findViewById(R.id.more_options_image_view);
         }
 
         public void setIcon(int resourceId) {
@@ -556,7 +515,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
         public ColorPickerViewHolder(View view) {
             super(view);
 
-            mAppearanceButton = (Button) view.findViewById(R.id.color_picker_button);
+            mAppearanceButton = view.findViewById(R.id.color_picker_button);
             view.setOnClickListener(this);
         }
 
@@ -609,7 +568,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
         public UnreadNotificationViewHolder(View view) {
             super(view);
 
-            mUnreadNotificationSwitch = (Switch) view.findViewById(R.id.unread_notification_switch);
+            mUnreadNotificationSwitch = view.findViewById(R.id.unread_notification_switch);
             view.setOnClickListener(this);
         }
 
@@ -684,7 +643,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
             super(view);
 
             mBackgroundComplicationButton =
-                    (Button) view.findViewById(R.id.background_complication_button);
+                    view.findViewById(R.id.background_complication_button);
             view.setOnClickListener(this);
         }
 

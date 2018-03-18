@@ -36,6 +36,7 @@ import java.lang.ref.WeakReference;
 import java.lang.String;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +62,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                     ComplicationData.TYPE_SHORT_TEXT,
                     ComplicationData.TYPE_SMALL_IMAGE
             },
+
             {
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
@@ -72,8 +74,9 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                     ComplicationData.TYPE_ICON,
                     ComplicationData.TYPE_SHORT_TEXT,
                     ComplicationData.TYPE_SMALL_IMAGE
-            }
+            },
     };
+    private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
 
     public static int getComplicationId(
             ComplicationConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
@@ -111,21 +114,18 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         }
     }
 
-    private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
-
     @Override
     public Engine onCreateEngine() {
         return new Engine();
     }
 
     private static class EngineHandler extends Handler {
+        private static final int MSG_UPDATE_TIME = 0;
         private final WeakReference<SimpleAnalogueWatchFace.Engine> mWeakReference;
 
         public EngineHandler(SimpleAnalogueWatchFace.Engine reference) {
             mWeakReference = new WeakReference<>(reference);
         }
-
-        private static final int MSG_UPDATE_TIME = 0;
 
         @Override
         public void handleMessage(Message msg) {
@@ -157,6 +157,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         private static final int SHADOW_RADIUS = 7;
 
         private final Handler mUpdateTimeHandler = new EngineHandler(this);
+        SharedPreferences mSharedPref;
         private Calendar mCalendar;
         private final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
             @Override
@@ -165,7 +166,6 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 invalidate();
             }
         };
-
         private boolean mRegisteredTimeZoneReceiver = false;
         private boolean mMuteMode;
         private float mCenterX;
@@ -174,7 +174,6 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         private float mSecondHandLength;
         private float sMinuteHandLength;
         private float sHourHandLength;
-
         private int mWatchHourMinuteColor;
         private int mWatchSecondColor;
         private int mWatchInnerSecondCircleColor;
@@ -185,7 +184,6 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         private int mBackgroundPaintColor;
         private int mWatchOuterCircleColor;
         private int mWatchWhiteColor;
-
         private Paint mHourPaint;
         private Paint mMinutePaint;
         private Paint mSecondPaint;
@@ -199,18 +197,13 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         private Paint mTextPaint;
         private Paint mTextPaintHours;
         private Paint mDateBoxPaint;
-
         private Bitmap mBackgroundBitmap;
         private Bitmap mGrayBackgroundBitmap;
-
         private SparseArray<ComplicationData> mActiveComplicationDataSparseArray;
         private SparseArray<ComplicationDrawable> mComplicationDrawableSparseArray;
-
         private boolean mAmbient;
         private boolean mLowBitAmbient;
         private boolean mBurnInProtection;
-
-        SharedPreferences mSharedPref;
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -256,34 +249,34 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
             mWatchHourTickColor = mSharedPref.getInt(markerColorResourceName, Color.RED);
 
-            if (mBackgroundPaintColor == Color.WHITE) {
-                mWatchHourMinuteColor = Color.BLACK;
-                mWatchHandShadowColor = Color.WHITE;
-            } else {
-                mWatchHourMinuteColor = Color.WHITE;
-                mWatchHandShadowColor = Color.BLACK;
-            }
         }
 
         private void initializeBackground() {
+
+            Random bg = new Random();
+            int i1;
+            i1 = bg.nextInt(5 - 0 + 1);
+
+            String mDrawableName = "bg"+ String.valueOf(i1);
+            int bgID = getResources().getIdentifier(mDrawableName , "drawable", getPackageName());
+
             mBackgroundPaint = new Paint();
             mBackgroundPaint.setColor(mBackgroundPaintColor);
 
-            mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+            mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), bgID);
 
             Palette.from(mBackgroundBitmap).generate(new Palette.PaletteAsyncListener() {
                 @Override
                 public void onGenerated(Palette palette) {
                     if (palette != null) {
-                        mWatchSecondColor = palette.getVibrantColor(Color.RED);
-                        mWatchHourMinuteColor = palette.getLightVibrantColor(Color.WHITE);
-                        mWatchInnerCircleColor = palette.getLightVibrantColor(Color.WHITE);
-                        mWatchHandShadowColor = palette.getDarkMutedColor(Color.DKGRAY);
+                        mWatchHourMinuteColor = palette.getVibrantColor(Color.WHITE);
+                        mWatchHandShadowColor = palette.getDarkMutedColor(Color.BLACK);
                         updateWatchHandStyle();
                     }
                 }
             });
         }
+
         private void initializeComplications() {
 
             mActiveComplicationDataSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
@@ -313,7 +306,6 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         }
 
         private void initializeWatchFace() {
-
             mHourPaint = new Paint();
             mHourPaint.setColor(mWatchHourMinuteColor);
             mHourPaint.setStrokeWidth(HOUR_STROKE_WIDTH);
@@ -382,7 +374,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             mTextPaint.setTextSize(28f);
             mTextPaint.setAntiAlias(true);
             mTextPaint.setTextAlign(Paint.Align.LEFT);
-            mTextPaint.setColor(mWatchHourMinuteColor);
+            mTextPaint.setColor(mWatchWhiteColor);
 
             mTextPaintHours = new Paint();
             mTextPaintHours.setTypeface(SANS_SERIF);
@@ -484,6 +476,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 mOuterCirclePaint.setColor(mWatchHandShadowColor);
                 mTickAndCirclePaint.setColor(mWatchHandShadowColor);
                 mTextPaint.setColor(mWatchHandShadowColor);
+                mTextPaintHours.setColor(mWatchHandShadowColor);
                 mDateBoxPaint.setColor(mWatchHandShadowColor);
 
                 mHourPaint.setAntiAlias(false);
@@ -496,6 +489,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 mOuterCirclePaint.setAntiAlias(false);
                 mTickAndCirclePaint.setAntiAlias(false);
                 mTextPaint.setAntiAlias(false);
+                mTextPaintHours.setAntiAlias(false);
                 mDateBoxPaint.setAntiAlias(false);
 
                 mHourPaint.clearShadowLayer();
@@ -507,6 +501,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 mInnerRedCirclePaint.clearShadowLayer();
                 mOuterCirclePaint.clearShadowLayer();
                 mTickAndCirclePaint.clearShadowLayer();
+                mTextPaintHours.clearShadowLayer();
                 mDateBoxPaint.clearShadowLayer();
 
             } else {
@@ -519,7 +514,8 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 mInnerRedCirclePaint.setColor(mWatchHourTickColor);
                 mOuterCirclePaint.setColor(mWatchOuterCircleColor);
                 mTickAndCirclePaint.setColor(mWatchMinuteTickColor);
-                mTextPaint.setColor(mWatchHourMinuteColor);
+                mTextPaint.setColor(mWatchWhiteColor);
+                mTextPaintHours.setColor(mWatchHourMinuteColor);
                 mDateBoxPaint.setColor(mWatchHourMinuteColor);
 
                 mHourPaint.setAntiAlias(true);
@@ -530,6 +526,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 mOuterCirclePaint.setAntiAlias(true);
                 mTickAndCirclePaint.setAntiAlias(true);
                 mTextPaint.setAntiAlias(true);
+                mTextPaintHours.setAntiAlias(true);
                 mDateBoxPaint.setAntiAlias(true);
 
                 mHourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
@@ -541,6 +538,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 mOuterCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mTextPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+                mTextPaintHours.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mDateBoxPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
             }
         }
@@ -578,7 +576,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                     (int) (mBackgroundBitmap.getWidth() * scale),
                     (int) (mBackgroundBitmap.getHeight() * scale), true);
 
-             int sizeOfComplication = width / 4;
+            int sizeOfComplication = width / 4;
             int midpointOfScreen = width / 2;
 
             int horizontalOffset = (midpointOfScreen - sizeOfComplication) / 2;
@@ -679,8 +677,8 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             if (mAmbient && (mLowBitAmbient || mBurnInProtection)) {
                 canvas.drawColor(Color.BLACK);
             } else if (mAmbient) {
-//                canvas.drawBitmap(mGrayBackgroundBitmap, 0, 0, mBackgroundPaint);
-                canvas.drawColor(Color.BLACK);
+                canvas.drawBitmap(mGrayBackgroundBitmap, 0, 0, mBackgroundPaint);
+                //canvas.drawColor(Color.BLACK);
             } else {
                 canvas.drawBitmap(mBackgroundBitmap, 0, 0, mBackgroundPaint);
             }
@@ -699,12 +697,6 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         }
 
         private void drawDate (Canvas canvas) {
-
-            SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss", Locale.UK);
-            String strTime = sdf2.format(mCalendar.getTimeInMillis());
-
-            SimpleDateFormat sdfDay = new SimpleDateFormat("EEE", Locale.UK);
-            String strDay = sdfDay.format(mCalendar.getTimeInMillis());
 
             int yPos = (int) ((canvas.getHeight() / 2) - ((mTextPaint.descent() + mTextPaint.ascent()) / 2)) ;
 
@@ -733,12 +725,12 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 canvas.drawRect(mTextWidth - 4,
                         (yPos - (boundsa3.height() + 4)),
                         (mTextWidth + (boundsa3a.width() + 8)),
-                        yPos + 4,
+                        yPos + 6,
                         mHourTickPaint);
                 canvas.drawRect(dateBoxL,
                         (yPos - (boundsa3.height() + 4)),
                         (mTextWidth + (boundsa3.width() + 8)),
-                        yPos + 4,
+                        yPos + 6,
                         mHourTickPaint);
                 canvas.drawText(mDayDate,
                         mTextWidth,

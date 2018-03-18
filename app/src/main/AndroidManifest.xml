@@ -3,9 +3,9 @@
     package="uk.co.shibt.shibtsimpleanaloguewatchface">
 
     <uses-sdk
+        android:maxSdkVersion="27"
         android:minSdkVersion="25"
-        android:maxSdkVersion="26"
-        android:targetSdkVersion="26" />
+        android:targetSdkVersion="27" />
 
     <uses-feature android:name="android.hardware.type.watch" />
 

@@ -19,10 +19,6 @@ import java.util.ArrayList;
 
 public class ComplicationConfigData {
 
-    public interface ConfigItemType {
-        int getConfigType();
-    }
-
     public static Class getWatchFaceServiceClass() {
         return SimpleAnalogueWatchFace.class;
     }
@@ -85,15 +81,11 @@ public class ComplicationConfigData {
                         ColorSelectionActivity.class);
         settingsConfigData.add(backgroundColorConfigItem);
 
-        // Data for background complications UX in settings Activity.
-        ConfigItemType backgroundImageComplicationConfigItem =
-                // TODO (jewalker): Revised in another CL to support background complication.
-                new BackgroundComplicationConfigItem(
-                        context.getString(R.string.config_background_image_complication_label),
-                        R.drawable.ic_landscape_white);
-        settingsConfigData.add(backgroundImageComplicationConfigItem);
-
         return settingsConfigData;
+    }
+
+    public interface ConfigItemType {
+        int getConfigType();
     }
 
     public static class PreviewAndComplicationsConfigItem implements ConfigItemType {
@@ -172,30 +164,4 @@ public class ComplicationConfigData {
         }
     }
 
-    public static class BackgroundComplicationConfigItem  implements ConfigItemType {
-
-        private String name;
-        private int iconResourceId;
-
-        BackgroundComplicationConfigItem(
-                String name,
-                int iconResourceId) {
-
-            this.name = name;
-            this.iconResourceId = iconResourceId;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getIconResourceId() {
-            return iconResourceId;
-        }
-
-        @Override
-        public int getConfigType() {
-            return ComplicationConfigRecyclerViewAdapter.TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG;
-        }
-    }
 }
