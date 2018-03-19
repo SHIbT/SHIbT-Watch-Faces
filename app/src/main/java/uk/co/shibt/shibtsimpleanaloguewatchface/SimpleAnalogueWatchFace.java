@@ -22,6 +22,7 @@ import android.support.v7.graphics.Palette;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
@@ -250,7 +251,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
         }
 
-        private void initializeBackground() {
+        int getbgID(){
 
             Random bg = new Random();
             int i1;
@@ -259,10 +260,19 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             String mDrawableName = "bg"+ String.valueOf(i1);
             int bgID = getResources().getIdentifier(mDrawableName , "drawable", getPackageName());
 
+            return bgID;
+        }
+
+        private void initializeBackground() {
+
+            int bgResult = getbgID();
+
+            Log.d("myID", String.valueOf(bgResult));
+
             mBackgroundPaint = new Paint();
             mBackgroundPaint.setColor(mBackgroundPaintColor);
 
-            mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), bgID);
+            mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), bgResult);
 
             Palette.from(mBackgroundBitmap).generate(new Palette.PaletteAsyncListener() {
                 @Override
