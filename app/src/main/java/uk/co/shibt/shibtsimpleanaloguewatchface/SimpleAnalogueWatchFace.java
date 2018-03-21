@@ -681,6 +681,10 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             drawWatchFace(canvas);
         }
 
+public void scheduleDrawable (drawBackground, 
+                initializeBackground, 
+                3000)
+
         private void drawBackground(Canvas canvas) {
 
             if (mAmbient && (mLowBitAmbient || mBurnInProtection)) {
