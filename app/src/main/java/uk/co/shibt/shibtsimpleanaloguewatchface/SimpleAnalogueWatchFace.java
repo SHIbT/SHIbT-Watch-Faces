@@ -251,23 +251,25 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
         }
 
-        int getbgID(){
+        public int[] bgArray = {
+                R.drawable.bg1,
+                R.drawable.bg2,
+                R.drawable.bg3,
+                R.drawable.bg4,
+                R.drawable.bg5,
+        };
 
-            Random bg = new Random();
-            int i1;
-            i1 = bg.nextInt(5 - 0 + 1);
+        int myBgID(){
 
-            String mDrawableName = "bg"+ String.valueOf(i1);
-            int bgID = getResources().getIdentifier(mDrawableName , "drawable", getPackageName());
+            int idx = new Random().nextInt(bgArray.length);
+            int bgID = getResources().getIdentifier(String.valueOf(bgArray[idx]),"drawable",getPackageName());
 
             return bgID;
         }
 
         private void initializeBackground() {
 
-            int bgResult = getbgID();
-
-            Log.d("myID", String.valueOf(bgResult));
+            int bgResult = myBgID();
 
             mBackgroundPaint = new Paint();
             mBackgroundPaint.setColor(mBackgroundPaintColor);
@@ -681,10 +683,6 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             drawWatchFace(canvas);
         }
 
-public void scheduleDrawable (drawBackground, 
-                initializeBackground, 
-                3000)
-
         private void drawBackground(Canvas canvas) {
 
             if (mAmbient && (mLowBitAmbient || mBurnInProtection)) {
@@ -896,16 +894,6 @@ public void scheduleDrawable (drawBackground,
                     mCenterY - sMinuteHandLength,
                     mMinutePaint);
 
-            if (!mAmbient) {
-                canvas.rotate(secondsRotation - minutesRotation, mCenterX, mCenterY);
-                canvas.drawLine(
-                        mCenterX,
-                        mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
-                        mCenterX,
-                        mCenterY - mSecondHandLength,
-                        mSecondPaint);
-
-            }
             canvas.restore();
 
             canvas.drawCircle(
@@ -930,6 +918,19 @@ public void scheduleDrawable (drawBackground,
                         mCenterX-10,
                         mOuterCirclePaint);
             }
+
+            canvas.save();
+            if (!mAmbient) {
+                canvas.rotate(secondsRotation - minutesRotation, mCenterX, mCenterY);
+                canvas.drawLine(
+                        mCenterX,
+                        mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
+                        mCenterX,
+                        mCenterY - mSecondHandLength,
+                        mSecondPaint);
+
+            }
+            canvas.restore();
         }
 
         @Override
