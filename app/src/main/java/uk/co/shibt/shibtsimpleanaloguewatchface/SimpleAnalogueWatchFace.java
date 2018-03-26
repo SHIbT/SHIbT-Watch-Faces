@@ -39,6 +39,8 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
@@ -52,7 +54,10 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
     private static final int LEFT_COMPLICATION_ID = 102;
 
     private static final int[] COMPLICATION_IDS = {
-            BACKGROUND_COMPLICATION_ID, TOP_COMPLICATION_ID, BOTTOM_COMPLICATION_ID, LEFT_COMPLICATION_ID
+            BACKGROUND_COMPLICATION_ID,
+            TOP_COMPLICATION_ID,
+            BOTTOM_COMPLICATION_ID,
+            LEFT_COMPLICATION_ID
     };
 
     private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
@@ -142,6 +147,8 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
     private class Engine extends CanvasWatchFaceService.Engine {
         /* Setup of the hands size */
+        private static final int BG_UPDATE_INTERVAL = 1000 * 60 * 60 * 12 ; //12 hour timer
+
         private static final int MSG_UPDATE_TIME = 0;
         private static final float HOUR_STROKE_WIDTH = 5f;
         private static final float MINUTE_STROKE_WIDTH = 3f;
@@ -237,6 +244,8 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             initializeComplications();
             initializeWatchFace();
         }
+
+
         private void loadSavedPreferences() {
 
             String backgroundColorResourceName =
@@ -259,22 +268,12 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 R.drawable.bg5,
         };
 
-        int myBgID(){
-
-            int idx = new Random().nextInt(bgArray.length);
-            int bgID = getResources().getIdentifier(String.valueOf(bgArray[idx]),"drawable",getPackageName());
-
-            return bgID;
-        }
-
         private void initializeBackground() {
-
-            int bgResult = myBgID();
-
+            int idx = new Random().nextInt(bgArray.length);
             mBackgroundPaint = new Paint();
             mBackgroundPaint.setColor(mBackgroundPaintColor);
 
-            mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), bgResult);
+            mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), bgArray[idx]);
 
             Palette.from(mBackgroundBitmap).generate(new Palette.PaletteAsyncListener() {
                 @Override
@@ -286,6 +285,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                     }
                 }
             });
+
         }
 
         private void initializeComplications() {
@@ -306,9 +306,12 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
             mComplicationDrawableSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
 
-            mComplicationDrawableSparseArray.put(TOP_COMPLICATION_ID, topComplicationDrawable);
-            mComplicationDrawableSparseArray.put(BOTTOM_COMPLICATION_ID, bottomComplicationDrawable);
-            mComplicationDrawableSparseArray.put(LEFT_COMPLICATION_ID, leftComplicationDrawable);
+            mComplicationDrawableSparseArray.put(
+                    TOP_COMPLICATION_ID, topComplicationDrawable);
+            mComplicationDrawableSparseArray.put(
+                    BOTTOM_COMPLICATION_ID, bottomComplicationDrawable);
+            mComplicationDrawableSparseArray.put(
+                    LEFT_COMPLICATION_ID, leftComplicationDrawable);
             mComplicationDrawableSparseArray.put(
                     BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
 
@@ -430,7 +433,8 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         public void onPropertiesChanged(Bundle properties) {
             super.onPropertiesChanged(properties);
             mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
-            mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+            mBurnInProtection = properties.getBoolean(
+                    PROPERTY_BURN_IN_PROTECTION, false);
 
             ComplicationDrawable complicationDrawable;
 
@@ -543,11 +547,14 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 mHourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mMinutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mSecondPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+                mTickAndCirclePaint.setShadowLayer(
+                        SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mHourTickPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mMinuteTickPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mOuterCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+                mOuterCirclePaint.setShadowLayer(
+                        SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+                mTickAndCirclePaint.setShadowLayer(
+                        SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mTextPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mTextPaintHours.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mDateBoxPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
@@ -673,6 +680,39 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
+
+            Timer timerObj = new Timer();
+            TimerTask timerTaskObj = new TimerTask() {
+                public void run() {
+
+                    int[] bgArray = {
+                            R.drawable.bg1,
+                            R.drawable.bg2,
+                            R.drawable.bg3,
+                            R.drawable.bg4,
+                            R.drawable.bg5,
+                    };
+                    int idx = new Random().nextInt(bgArray.length);
+                    mBackgroundPaint = new Paint();
+                    mBackgroundPaint.setColor(mBackgroundPaintColor);
+
+                    mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), bgArray[idx]);
+
+                    Palette.from(mBackgroundBitmap).generate(new Palette.PaletteAsyncListener() {
+                        @Override
+                        public void onGenerated(Palette palette) {
+                            if (palette != null) {
+                                mWatchHourMinuteColor = palette.getVibrantColor(Color.WHITE);
+                                mWatchHandShadowColor = palette.getDarkMutedColor(Color.BLACK);
+                                updateWatchHandStyle();
+                            }
+                        }
+                    });
+
+                }
+            };
+            timerObj.schedule(timerTaskObj, 1000, BG_UPDATE_INTERVAL );
+
             long now = System.currentTimeMillis();
             mCalendar.setTimeInMillis(now);
 
@@ -709,7 +749,8 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
         private void drawDate (Canvas canvas) {
 
-            int yPos = (int) ((canvas.getHeight() / 2) - ((mTextPaint.descent() + mTextPaint.ascent()) / 2)) ;
+            int yPos = (int) ((canvas.getHeight() / 2) -
+                    ((mTextPaint.descent() + mTextPaint.ascent()) / 2)) ;
 
             SimpleDateFormat sdfDay2 = new SimpleDateFormat("EEE", Locale.UK);
             String strDay2 = sdfDay2.format(mCalendar.getTimeInMillis());
@@ -764,75 +805,95 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)+5), mCenterY + innerY,
+                    canvas.drawText(String.valueOf(textIndex),
+                            ((mCenterX + innerX)+5),
+                            mCenterY + innerY,
                             mTextPaintHours);
                 }
                 for (int textIndex = 2; textIndex < 3; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)+7), mCenterY + innerY,
+                    canvas.drawText(String.valueOf(textIndex),
+                            ((mCenterX + innerX)+7),
+                            mCenterY + innerY,
                             mTextPaintHours);
                 }
                 for (int textIndex = 4; textIndex < 5; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)+7), ((mCenterY + innerY)+15),
+                    canvas.drawText(String.valueOf(textIndex),
+                            ((mCenterX + innerX)+7),
+                            ((mCenterY + innerY)+15),
                             mTextPaintHours);
                 }
                 for (int textIndex = 5; textIndex < 6; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)+5), ((mCenterY + innerY)+15),
+                    canvas.drawText(String.valueOf(textIndex),
+                            ((mCenterX + innerX)+5),
+                            ((mCenterY + innerY)+15),
                             mTextPaintHours);
                 }
                 for (int textIndex = 7; textIndex < 8; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)-2), ((mCenterY + innerY)+15),
+                    canvas.drawText(String.valueOf(textIndex),
+                            ((mCenterX + innerX)-2),
+                            ((mCenterY + innerY)+15),
                             mTextPaintHours);
                 }
                 for (int textIndex = 8; textIndex < 9; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex), ((mCenterX + innerX) - 10), ((mCenterY + innerY)+15),
+                    canvas.drawText(String.valueOf(textIndex),
+                            ((mCenterX + innerX) - 10),
+                            ((mCenterY + innerY)+15),
                             mTextPaintHours);
                 }
                 for (int textIndex = 10; textIndex < 11; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX) -7), ((mCenterY + innerY)+5),
+                    canvas.drawText(String.valueOf(textIndex),
+                            ((mCenterX + innerX) -7),
+                            ((mCenterY + innerY)+5),
                             mTextPaintHours);
                 }
                 for (int textIndex = 11; textIndex < 12; textIndex++) {
                     float tickRot = (float) (textIndex * Math.PI * 2 / 12);
                     float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                     float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                    canvas.drawText(String.valueOf(textIndex),((mCenterX + innerX)-5), mCenterY + innerY,
+                    canvas.drawText(String.valueOf(textIndex),
+                            ((mCenterX + innerX)-5),
+                            mCenterY + innerY,
                             mTextPaintHours);
                 }
             } else {
                 float tickRot = (float) (0 * Math.PI * 2 / 12);
                 float innerX = (float) Math.sin(tickRot) * innerTextRadius;
                 float innerY = (float) -Math.cos(tickRot) * innerTextRadius;
-                canvas.drawText("12", ((mCenterX + innerX) -15), mCenterY + innerY, mTextPaint);
+                canvas.drawText("12", ((mCenterX + innerX) -15),
+                        mCenterY + innerY, mTextPaint);
                 float tickRot3 = (float) (3 * Math.PI * 2 / 12);
                 float innerX3 = (float) Math.sin(tickRot3) * innerTextRadius;
                 float innerY3 = (float) -Math.cos(tickRot3) * innerTextRadius;
-                canvas.drawText("3", ((mCenterX + innerX3)+5), ((mCenterY + innerY3)+12), mTextPaint);
+                canvas.drawText("3", ((mCenterX + innerX3)+5),
+                        ((mCenterY + innerY3)+12), mTextPaint);
                 float tickRot6 = (float) (6 * Math.PI * 2 / 12);
                 float innerX6 = (float) Math.sin(tickRot6) * innerTextRadius;
                 float innerY6 = (float) -Math.cos(tickRot6) * innerTextRadius;
-                canvas.drawText("6", ((mCenterX + innerX6) -8), ((mCenterY + innerY6) +20), mTextPaint);
+                canvas.drawText("6", ((mCenterX + innerX6) -8),
+                        ((mCenterY + innerY6) +20), mTextPaint);
                 float tickRot9 = (float) (9 * Math.PI * 2 / 12);
                 float innerX9 = (float) Math.sin(tickRot9) * innerTextRadius;
                 float innerY9 = (float) -Math.cos(tickRot9) * innerTextRadius;
-                canvas.drawText("9", ((mCenterX + innerX9) -20), ((mCenterY + innerY9)+10), mTextPaint);
+                canvas.drawText("9", ((mCenterX + innerX9) -20),
+                        ((mCenterY + innerY9)+10), mTextPaint);
 
             }
             if(!mAmbient) {
