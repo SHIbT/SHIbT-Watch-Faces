@@ -711,7 +711,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
                 }
             };
-            timerObj.schedule(timerTaskObj, 1000, BG_UPDATE_INTERVAL );
+            timerObj.schedule(timerTaskObj, BG_UPDATE_INTERVAL, BG_UPDATE_INTERVAL );
 
             long now = System.currentTimeMillis();
             mCalendar.setTimeInMillis(now);
