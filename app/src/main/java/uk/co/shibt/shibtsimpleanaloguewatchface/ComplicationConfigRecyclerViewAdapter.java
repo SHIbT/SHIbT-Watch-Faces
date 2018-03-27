@@ -568,7 +568,6 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
         public UnreadNotificationViewHolder(View view) {
             super(view);
 
-            mUnreadNotificationSwitch = view.findViewById(R.id.unread_notification_switch);
             view.setOnClickListener(this);
         }
 
@@ -642,8 +641,6 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
         public BackgroundComplicationViewHolder(View view) {
             super(view);
 
-            mBackgroundComplicationButton =
-                    view.findViewById(R.id.background_complication_button);
             view.setOnClickListener(this);
         }
 

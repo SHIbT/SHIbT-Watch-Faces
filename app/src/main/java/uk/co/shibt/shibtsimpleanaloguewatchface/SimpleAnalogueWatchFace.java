@@ -15,6 +15,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.rendering.ComplicationDrawable;
@@ -26,8 +27,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
-import uk.co.shibt.shibtsimpleanaloguewatchface.R;
-import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigRecyclerViewAdapter;
 
 import static android.graphics.Typeface.MONOSPACE;
 import static android.graphics.Typeface.SANS_SERIF;
@@ -147,7 +146,7 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
     private class Engine extends CanvasWatchFaceService.Engine {
         /* Setup of the hands size */
-        private static final int BG_UPDATE_INTERVAL = 1000 * 60 * 60 * 12 ; //12 hour timer
+        private static final int BG_UPDATE_INTERVAL = 1000 * 60 * 60 * 12; //12 hour timer
 
         private static final int MSG_UPDATE_TIME = 0;
         private static final float HOUR_STROKE_WIDTH = 5f;
@@ -173,6 +172,9 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 invalidate();
             }
         };
+
+        public Timer timerObj = new Timer();
+        private Engine ctx;
         private boolean mRegisteredTimeZoneReceiver = false;
         private boolean mMuteMode;
         private float mCenterX;
@@ -212,6 +214,12 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         private boolean mLowBitAmbient;
         private boolean mBurnInProtection;
 
+
+        public IBinder onBind(Intent arg0)
+        {
+            return null;
+        }
+
         @Override
         public void onCreate(SurfaceHolder holder) {
             super.onCreate(holder);
@@ -243,8 +251,47 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             initializeBackground();
             initializeComplications();
             initializeWatchFace();
+            ctx = this;
+            startService();
         }
 
+        private void startService()
+        {
+            timerObj.scheduleAtFixedRate(new mainTask(), 0, BG_UPDATE_INTERVAL);
+        }
+
+        private class mainTask extends TimerTask
+        {
+            public void run()
+            {
+                int idx = new Random().nextInt(bgArray.length);
+
+                    mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), bgArray[idx]);
+
+                    Palette.from(mBackgroundBitmap).generate(new Palette.PaletteAsyncListener() {
+                        @Override
+                        public void onGenerated(Palette palette) {
+                            if (palette != null) {
+                                mWatchHourMinuteColor = palette.getVibrantColor(Color.WHITE);
+                                mWatchHandShadowColor = palette.getDarkMutedColor(Color.BLACK);
+                                updateWatchHandStyle();
+                            }
+                        }
+                    });
+
+                mGrayBackgroundBitmap = Bitmap.createBitmap(
+                        mBackgroundBitmap.getWidth(),
+                        mBackgroundBitmap.getHeight(),
+                        Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(mGrayBackgroundBitmap);
+                Paint grayPaint = new Paint();
+                ColorMatrix colorMatrix = new ColorMatrix();
+                colorMatrix.setSaturation(0);  //converts to Grayscale
+                ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+                grayPaint.setColorFilter(filter);
+                canvas.drawBitmap(mBackgroundBitmap, 0, 0, grayPaint);
+            }
+        }
 
         private void loadSavedPreferences() {
 
@@ -680,38 +727,6 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
 
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
-
-            Timer timerObj = new Timer();
-            TimerTask timerTaskObj = new TimerTask() {
-                public void run() {
-
-                    int[] bgArray = {
-                            R.drawable.bg1,
-                            R.drawable.bg2,
-                            R.drawable.bg3,
-                            R.drawable.bg4,
-                            R.drawable.bg5,
-                    };
-                    int idx = new Random().nextInt(bgArray.length);
-                    mBackgroundPaint = new Paint();
-                    mBackgroundPaint.setColor(mBackgroundPaintColor);
-
-                    mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), bgArray[idx]);
-
-                    Palette.from(mBackgroundBitmap).generate(new Palette.PaletteAsyncListener() {
-                        @Override
-                        public void onGenerated(Palette palette) {
-                            if (palette != null) {
-                                mWatchHourMinuteColor = palette.getVibrantColor(Color.WHITE);
-                                mWatchHandShadowColor = palette.getDarkMutedColor(Color.BLACK);
-                                updateWatchHandStyle();
-                            }
-                        }
-                    });
-
-                }
-            };
-            timerObj.schedule(timerTaskObj, BG_UPDATE_INTERVAL, BG_UPDATE_INTERVAL );
 
             long now = System.currentTimeMillis();
             mCalendar.setTimeInMillis(now);
