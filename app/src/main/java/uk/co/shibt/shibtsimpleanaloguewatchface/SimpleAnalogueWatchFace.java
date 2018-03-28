@@ -23,7 +23,6 @@ import android.support.v7.graphics.Palette;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
@@ -255,11 +254,13 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
             startService();
         }
 
+        // Add timers in here
         private void startService()
         {
-            timerObj.scheduleAtFixedRate(new mainTask(), 0, BG_UPDATE_INTERVAL);
+            timerObj.scheduleAtFixedRate(new mainTask(), 0, BG_UPDATE_INTERVAL); //12 hour timer
         }
 
+        // Main timer task Add stuff here that will be timed.
         private class mainTask extends TimerTask
         {
             public void run()
