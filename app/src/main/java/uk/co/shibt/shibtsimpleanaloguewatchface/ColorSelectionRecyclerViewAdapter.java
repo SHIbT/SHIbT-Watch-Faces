@@ -9,17 +9,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.support.wearable.view.CircledImageView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import uk.co.shibt.shibtsimpleanaloguewatchface.R;
-
 import java.util.ArrayList;
 
 public class ColorSelectionRecyclerViewAdapter extends
-        RecyclerView.Adapter<RecyclerView.ViewHolder>{
+        RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = ColorSelectionRecyclerViewAdapter.class.getSimpleName();
 
     private ArrayList<Integer> mColorOptionsDataSet;
@@ -55,7 +52,7 @@ public class ColorSelectionRecyclerViewAdapter extends
         return mColorOptionsDataSet.size();
     }
 
-     public class ColorViewHolder extends RecyclerView.ViewHolder
+    public class ColorViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
         private CircledImageView mColorCircleImageView;
@@ -71,7 +68,7 @@ public class ColorSelectionRecyclerViewAdapter extends
         }
 
         @Override
-        public void onClick (View view) {
+        public void onClick(View view) {
             int position = getAdapterPosition();
             Integer color = mColorOptionsDataSet.get(position);
 

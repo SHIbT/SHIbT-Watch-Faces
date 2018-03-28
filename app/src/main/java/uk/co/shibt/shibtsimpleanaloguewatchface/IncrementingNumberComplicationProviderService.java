@@ -3,6 +3,7 @@ package uk.co.shibt.shibtsimpleanaloguewatchface;
 /**
  * Created by Tom Branton on 12/03/2018.
  */
+
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.SharedPreferences;
@@ -13,7 +14,7 @@ import android.support.wearable.complications.ComplicationText;
 
 import java.util.Locale;
 
-public class IncrementingNumberComplicationProviderService extends ComplicationProviderService{
+public class IncrementingNumberComplicationProviderService extends ComplicationProviderService {
     private static final String TAG = "ComplicationProvider";
 
     /*

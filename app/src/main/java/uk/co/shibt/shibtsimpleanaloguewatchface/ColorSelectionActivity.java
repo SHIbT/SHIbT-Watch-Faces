@@ -9,10 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.wear.widget.WearableRecyclerView;
 
-import uk.co.shibt.shibtsimpleanaloguewatchface.R;
-import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData;
-
-public class ColorSelectionActivity extends Activity{
+public class ColorSelectionActivity extends Activity {
 
     static final String EXTRA_SHARED_PREF =
             "uk.co.shibt.shibtsimpleanaloguewatchface.EXTRA_SHARED_PREF";

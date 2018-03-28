@@ -12,11 +12,7 @@ import android.support.wear.widget.WearableRecyclerView;
 import android.support.wearable.complications.ComplicationProviderInfo;
 import android.support.wearable.complications.ProviderChooserIntent;
 
-import uk.co.shibt.shibtsimpleanaloguewatchface.R;
-import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData;
-import uk.co.shibt.shibtsimpleanaloguewatchface.SimpleAnalogueWatchFace;
-
-public class ComplicationConfigActivity extends Activity{
+public class ComplicationConfigActivity extends Activity {
 
     static final int COMPLICATION_CONFIG_REQUEST_CODE = 1001;
     static final int UPDATE_COLORS_CONFIG_REQUEST_CODE = 1002;

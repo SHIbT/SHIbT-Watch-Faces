@@ -6,14 +6,6 @@ package uk.co.shibt.shibtsimpleanaloguewatchface;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.support.v7.widget.RecyclerView;
-
-import uk.co.shibt.shibtsimpleanaloguewatchface.R;
-import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigRecyclerViewAdapter;
-import uk.co.shibt.shibtsimpleanaloguewatchface.ColorSelectionActivity;
-import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigActivity;
-import uk.co.shibt.shibtsimpleanaloguewatchface.SimpleAnalogueWatchFace;
 
 import java.util.ArrayList;
 
@@ -124,7 +116,7 @@ public class ComplicationConfigData {
         }
     }
 
-    public static class ColorConfigItem  implements ConfigItemType {
+    public static class ColorConfigItem implements ConfigItemType {
 
         private String name;
         private int iconResourceId;
