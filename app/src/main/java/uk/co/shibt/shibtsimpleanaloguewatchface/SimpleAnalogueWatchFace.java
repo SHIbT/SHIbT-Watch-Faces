@@ -180,43 +180,16 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
         };
         private Engine ctx;
         private boolean mRegisteredTimeZoneReceiver = false;
-        private boolean mMuteMode;
-        private float mCenterX;
-        private float mCenterY;
-        private float mTextWidth;
-        private float mSecondHandLength;
-        private float sMinuteHandLength;
-        private float sHourHandLength;
-        private int mWatchHourMinuteColor;
-        private int mWatchSecondColor;
-        private int mWatchInnerSecondCircleColor;
-        private int mWatchHandShadowColor;
-        private int mWatchInnerCircleColor;
-        private int mWatchHourTickColor;
-        private int mWatchMinuteTickColor;
-        private int mBackgroundPaintColor;
-        private int mWatchOuterCircleColor;
-        private int mWatchWhiteColor;
-        private Paint mHourPaint;
-        private Paint mMinutePaint;
-        private Paint mSecondPaint;
-        private Paint mTickAndCirclePaint;
-        private Paint mHourTickPaint;
-        private Paint mMinuteTickPaint; /* Also covers seconds paint */
-        private Paint mInnerCirclePaint;
-        private Paint mInnerRedCirclePaint;
-        private Paint mOuterCirclePaint;
-        private Paint mBackgroundPaint;
-        private Paint mTextPaint;
-        private Paint mTextPaintHours;
-        private Paint mDateBoxPaint;
-        private Bitmap mBackgroundBitmap;
-        private Bitmap mGrayBackgroundBitmap;
+        private boolean mMuteMode,mAmbient,mLowBitAmbient,mBurnInProtection;
+        private float mCenterX, mCenterY, mTextWidth, mSecondHandLength, sMinuteHandLength, sHourHandLength;
+        private int mWatchHourMinuteColor, mWatchSecondColor, mWatchInnerSecondCircleColor,mWatchHandShadowColor,
+                    mWatchInnerCircleColor,mWatchHourTickColor,mWatchMinuteTickColor,mBackgroundPaintColor,mWatchOuterCircleColor,
+                    mWatchWhiteColor,mLightVibrantColor,mVibrantColor,mDarkVibrantColor,mLightMutedColor,mMutedColor,mDarkMutedColor;
+        private Paint mHourPaint,mMinutePaint,mSecondPaint,mTickAndCirclePaint,mHourTickPaint,mMinuteTickPaint,mInnerCirclePaint,
+                    mInnerRedCirclePaint,mOuterCirclePaint,mBackgroundPaint,mTextPaint,mTextPaintHours,mDateBoxPaint;
+        private Bitmap mBackgroundBitmap,mGrayBackgroundBitmap;
         private SparseArray<ComplicationData> mActiveComplicationDataSparseArray;
         private SparseArray<ComplicationDrawable> mComplicationDrawableSparseArray;
-        private boolean mAmbient;
-        private boolean mLowBitAmbient;
-        private boolean mBurnInProtection;
 
         public IBinder onBind(Intent arg0) {
             return null;
@@ -287,8 +260,15 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                 @Override
                 public void onGenerated(Palette palette) {
                     if (palette != null) {
-                        mWatchHourMinuteColor = palette.getVibrantColor(Color.WHITE);
-                        mWatchHandShadowColor = palette.getDarkMutedColor(Color.BLACK);
+                        mLightVibrantColor = palette.getLightVibrantColor(Color.WHITE);
+                        mVibrantColor = palette.getVibrantColor(Color.WHITE);
+                        mDarkVibrantColor = palette.getDarkVibrantColor(Color.BLACK);
+                        mLightMutedColor = palette.getDarkVibrantColor(Color.BLACK);
+                        mMutedColor = palette.getDarkVibrantColor(Color.BLACK);
+                        mDarkMutedColor = palette.getDarkVibrantColor(Color.BLACK);
+                        
+                        mWatchHourMinuteColor = mVibrantColor;
+                        mWatchHandShadowColor = mDarkMutedColor;
                         updateWatchHandStyle();
                     }
                 }
@@ -1044,8 +1024,15 @@ public class SimpleAnalogueWatchFace extends CanvasWatchFaceService {
                     @Override
                     public void onGenerated(Palette palette) {
                         if (palette != null) {
-                            mWatchHourMinuteColor = palette.getVibrantColor(Color.WHITE);
-                            mWatchHandShadowColor = palette.getDarkMutedColor(Color.BLACK);
+                            mLightVibrantColor = palette.getLightVibrantColor(Color.WHITE);
+                            mVibrantColor = palette.getVibrantColor(Color.WHITE);
+                            mDarkVibrantColor = palette.getDarkVibrantColor(Color.BLACK);
+                            mLightMutedColor = palette.getDarkVibrantColor(Color.BLACK);
+                            mMutedColor = palette.getDarkVibrantColor(Color.BLACK);
+                            mDarkMutedColor = palette.getDarkVibrantColor(Color.BLACK);
+                        
+                            mWatchHourMinuteColor = mVibrantColor;
+                            mWatchHandShadowColor = mDarkMutedColor;
                             updateWatchHandStyle();
                         }
                     }
