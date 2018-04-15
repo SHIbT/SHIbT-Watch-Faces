@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <resources>
     <color name="background">#000000</color>
     <color name="digital_text">#D3D3D3</color>
     <color name="drkGrey">#666666</color>
@@ -7,4 +8,5 @@
     <color name="green">#00ff00</color>
     <color name="yellow">#ffff00</color>
     <color name="color_item_circle_border_color">#424242</color>
+
 </resources>

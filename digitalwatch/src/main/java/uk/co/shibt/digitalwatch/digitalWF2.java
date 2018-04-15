@@ -22,12 +22,14 @@ import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -61,6 +63,112 @@ public class digitalWF2 extends CanvasWatchFaceService {
             LEFT_COMPLICATION_ID,
             RIGHT_COMPLICATION_ID
     };
+
+    public static class EnglishNumberToWords {
+
+        private static final String[] tensNames = { "", " ten", " twenty", " thirty", " forty",
+                " fifty" };
+
+        private static final String[] numNames = { "", " one", " two", " three", " four", " five",
+                " six", " seven", " eight", " nine", " ten", " eleven", " twelve", " thirteen",
+                " fourteen", " fifteen", " sixteen", " seventeen", " eighteen", " nineteen" };
+
+        private static String convertLessThanOneThousand(int number)
+        {
+            String soFar;
+
+            if (number % 100 < 20)
+            {
+                soFar = numNames[number % 100];
+                number /= 100;
+            } else
+            {
+                soFar = numNames[number % 10];
+                number /= 10;
+
+                soFar = tensNames[number % 10] + soFar;
+                number /= 10;
+            }
+            if (number == 0)
+                return soFar;
+            return numNames[number] + " hundred" + soFar;
+        }
+        public static String convert(long number)
+        {
+            // 0 to 999 999 999 999
+            if (number == 0)
+            {
+                return "zero";
+            }
+
+            String snumber = Long.toString(number);
+
+            // pad with "0"
+            String mask = "000000000000";
+            DecimalFormat df = new DecimalFormat(mask);
+            snumber = df.format(number);
+
+            // XXXnnnnnnnnn
+            int billions = Integer.parseInt(snumber.substring(0, 3));
+            // nnnXXXnnnnnn
+            int millions = Integer.parseInt(snumber.substring(3, 6));
+            // nnnnnnXXXnnn
+            int hundredThousands = Integer.parseInt(snumber.substring(6, 9));
+            // nnnnnnnnnXXX
+            int thousands = Integer.parseInt(snumber.substring(9, 12));
+
+            String tradBillions;
+            switch (billions)
+            {
+                case 0:
+                    tradBillions = "";
+                    break;
+                case 1:
+                    tradBillions = convertLessThanOneThousand(billions) + " billion ";
+                    break;
+                default:
+                    tradBillions = convertLessThanOneThousand(billions) + " billion ";
+            }
+            String result = tradBillions;
+
+            String tradMillions;
+            switch (millions)
+            {
+                case 0:
+                    tradMillions = "";
+                    break;
+                case 1:
+                    tradMillions = convertLessThanOneThousand(millions) + " million ";
+                    break;
+                default:
+                    tradMillions = convertLessThanOneThousand(millions) + " million ";
+            }
+            result = result + tradMillions;
+
+            String tradHundredThousands;
+            switch (hundredThousands)
+            {
+                case 0:
+                    tradHundredThousands = "";
+                    break;
+                case 1:
+                    tradHundredThousands = "one thousand ";
+                    break;
+                default:
+                    tradHundredThousands = convertLessThanOneThousand(hundredThousands) + " thousand ";
+            }
+            result = result + tradHundredThousands;
+
+            String tradThousand;
+            tradThousand = convertLessThanOneThousand(thousands);
+            result = result + tradThousand;
+
+            // remove extra spaces!
+            return result.replaceAll("^\\s+", "").replaceAll("\\b\\s{2,}\\b", " ");
+        }
+
+    }
+
     private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
             {//0 Background
                     ComplicationData.TYPE_LARGE_IMAGE
@@ -646,17 +754,22 @@ public class digitalWF2 extends CanvasWatchFaceService {
             //String Hour = String.format("%02d", mCalendar.get(Calendar.HOUR_OF_DAY));
             String Minute = String.format("%02d", mCalendar.get(Calendar.MINUTE));
             String Second = String.format("%02d", mCalendar.get(Calendar.SECOND));
+            int intSecond = Integer.parseInt(Second);
+
+            String wordSeconds = EnglishNumberToWords.convertLessThanOneThousand(intSecond);
 
             mTextPaint.getTextBounds(Hour, 0, Hour.length(), textBounds);
             mTextHeight = textBounds.height(); // Use height from getTextBounds()
             mTextWidth = (int) p.measureText(Hour);
 
             if (!mAmbient) {
-                canvas.drawText(Hour, mCenterX - (mTextWidth * 2f),
+                canvas.drawText(Hour, mCenterX - (mTextWidth * 4f),
                         mCenterY + (mTextHeight / 2f), mTextPaint);
-                canvas.drawText(Minute, mCenterX + (mTextWidth * 3f), mCenterY, mTextPaintm);
-                canvas.drawText(Second, mCenterX + (mTextWidth * 3f),
-                        mCenterY + (mTextHeight / 2f), mTextPaints);
+                canvas.drawText(Minute, mCenterX + (mTextWidth * 4f), mCenterY + (mTextHeight / 2f), mTextPaint);
+                //canvas.drawText(Second, mCenterX + (mTextWidth * 3f),
+                //        mCenterY + (mTextHeight / 2f), mTextPaints);
+                canvas.drawText(wordSeconds, mCenterX,
+                        mCenterY + (mTextHeight + 5), mTextPaints);
             } else {
                 canvas.drawText(Hour, mCenterX, mCenterY + (mTextHeight / 2f), mTextPaint);
             }

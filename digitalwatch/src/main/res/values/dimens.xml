@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <resources>
     <dimen name="digital_text_size">36dp</dimen>
     <dimen name="digital_text_size_round">40dp</dimen>
     <dimen name="digital_min_text_size">16dp</dimen>
@@ -12,4 +13,5 @@
     <dimen name="analog_complication_color_picker_size">35dp</dimen>
     <dimen name="watch_face_preview_background_padding">16dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
+
 </resources>

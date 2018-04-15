@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2017 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,13 +14,15 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="400dp"
-    android:height="400dp"
-    android:viewportHeight="400"
-    android:viewportWidth="400">
-    <group
-        android:translateX="-1"
-        android:translateY="1">
-       </group>
-</vector>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_grey"
+    android:paddingStart="@dimen/activity_config_padding"
+    android:paddingEnd="@dimen/activity_config_padding">
+    <android.support.wear.widget.WearableRecyclerView
+        android:id="@+id/wearable_recycler_view"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+</FrameLayout>
