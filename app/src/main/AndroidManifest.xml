@@ -15,23 +15,25 @@
     <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.DeviceDefault"
-        android:fullBackupContent="@xml/backup_descriptor">
+        android:theme="@android:style/Theme.DeviceDefault">
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
+            android:value="@integer/google_play_services_version" />
+
         <uses-library
             android:name="com.google.android.wearable"
-            android:required="false"/>
+            android:required="false" />
 
         <service
             android:name=".SimpleAnalogueWatchFace"
@@ -47,10 +49,9 @@
             <meta-data
                 android:name="com.google.android.wearable.watchface.preview_circular"
                 android:resource="@drawable/preview_analog" />
-
             <meta-data
                 android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
-                android:value="uk.co.shibt.shibtsimpleanaloguewatchface.CONFIG_COMPLICATION"/>
+                android:value="uk.co.shibt.shibtsimpleanaloguewatchface.CONFIG_COMPLICATION" />
 
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
@@ -59,32 +60,31 @@
             </intent-filter>
         </service>
 
-
-        <activity android:name="android.support.wearable.complications.ComplicationHelperActivity"/>
+        <activity android:name="android.support.wearable.complications.ComplicationHelperActivity" />
         <activity
             android:name=".ComplicationConfigActivity"
             android:label="@string/analog_complication_config">
             <intent-filter>
-                <action android:name="uk.co.shibt.shibtsimpleanaloguewatchface.CONFIG_COMPLICATION"/>
+                <action android:name="uk.co.shibt.shibtsimpleanaloguewatchface.CONFIG_COMPLICATION" />
 
-                <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <service
-            android:name="IncrementingNumberComplicationProviderService"
+            android:name=".IncrementingNumberComplicationProviderService"
             android:icon="@drawable/icn_complications"
             android:label="@string/complications_provider_incrementing_number"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
             <intent-filter>
-                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
             </intent-filter>
 
             <meta-data
                 android:name="android.support.wearable.complications.SUPPORTED_TYPES"
-                android:value="RANGED_VALUE,SHORT_TEXT,LONG_TEXT"/>
-<!--
+                android:value="RANGED_VALUE,SHORT_TEXT,LONG_TEXT" />
+            <!--
             When your complication data provider is active, UPDATE_PERIOD_SECONDS specifies how
             often you want the system to check for updates to the data.
 
@@ -96,16 +96,17 @@
             A good value might be 600 seconds (10 minutes) if you need updates pulled often.
 
             Also, remember that this is only a guidance for the system. Android Wear may update less
-            frequently. -->
+            frequently.
+            -->
 
-                <meta-data
-                        android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
-                        android:value="600"/>
-                </service>
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="600" />
+        </service>
 
-                <receiver android:name="ComplicationToggleReceiver"/>
-                <activity android:name="ColorSelectionActivity"/>
+        <receiver android:name=".ComplicationToggleReceiver" />
 
+        <activity android:name=".ColorSelectionActivity" />
     </application>
 
 </manifest>

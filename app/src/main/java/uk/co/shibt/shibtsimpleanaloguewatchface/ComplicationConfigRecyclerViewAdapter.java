@@ -1,5 +1,7 @@
 package uk.co.shibt.shibtsimpleanaloguewatchface;
 
+import static uk.co.shibt.shibtsimpleanaloguewatchface.ColorSelectionActivity.EXTRA_SHARED_PREF;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -26,25 +28,25 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.concurrent.Executors;
-
+import uk.co.shibt.shibtsimpleanaloguewatchface.R;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.ColorConfigItem;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.ConfigItemType;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.MoreOptionsConfigItem;
 import uk.co.shibt.shibtsimpleanaloguewatchface.ComplicationConfigData.PreviewAndComplicationsConfigItem;
+import uk.co.shibt.shibtsimpleanaloguewatchface.SimpleAnalogueWatchFace;
 
-import static uk.co.shibt.shibtsimpleanaloguewatchface.ColorSelectionActivity.EXTRA_SHARED_PREF;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
 
 /**
  * Created by SHIbT on 13/03/2018.
  */
 
-public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public static final int TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG = 0;
     public static final int TYPE_MORE_OPTIONS = 1;
     public static final int TYPE_COLOR_CONFIG = 2;
-    //    public static final int TYPE_UNREAD_NOTIFICATION_CONFIG = 3;
+//    public static final int TYPE_UNREAD_NOTIFICATION_CONFIG = 3;
     public static final int TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG = 4;
     private static final String TAG = "CompConfigAdapter";
     SharedPreferences mSharedPref;
@@ -202,9 +204,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
         return mSettingsDataSet.size();
     }
 
-    /**
-     * Updates the selected complication id saved earlier with the new information.
-     */
+    /** Updates the selected complication id saved earlier with the new information. */
     public void updateSelectedComplication(ComplicationProviderInfo complicationProviderInfo) {
 
         // Checks if view is inflated and complication id is valid.
@@ -299,7 +299,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
 
                 Activity currentActivity = (Activity) view.getContext();
                 launchComplicationHelperActivity(currentActivity, ComplicationLocation.TOP);
-            } else if (view.equals(mBottomComplication)) {
+            }else if (view.equals(mBottomComplication)) {
 
                 Activity currentActivity = (Activity) view.getContext();
                 launchComplicationHelperActivity(currentActivity, ComplicationLocation.BOTTOM);
@@ -488,9 +488,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
         }
     }
 
-    /**
-     * Displays icon to indicate there are more options below the fold.
-     */
+    /** Displays icon to indicate there are more options below the fold. */
     public class MoreOptionsViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mMoreOptionsImageView;
@@ -634,9 +632,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
         }
     }
 
-    /**
-     * Displays button to trigger background image complication selector.
-     */
+    /** Displays button to trigger background image complication selector. */
     public class BackgroundComplicationViewHolder extends RecyclerView.ViewHolder
             implements OnClickListener {
 
