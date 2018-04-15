@@ -751,7 +751,8 @@ public class digitalWF2 extends CanvasWatchFaceService {
                     : String.format("%02d", mCalendar.get(Calendar.HOUR_OF_DAY));
 
 
-            //String Hour = String.format("%02d", mCalendar.get(Calendar.HOUR_OF_DAY));
+            //String Hour = String.format("%02d:%02d", mCalendar.get(Calendar.HOUR_OF_DAY),
+            //                    mCalendar.get(Calendar.MINUTE));
             String Minute = String.format("%02d", mCalendar.get(Calendar.MINUTE));
             String Second = String.format("%02d", mCalendar.get(Calendar.SECOND));
             int intSecond = Integer.parseInt(Second);

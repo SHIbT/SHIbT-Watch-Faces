@@ -1,7 +1,8 @@
 apply plugin: 'com.android.application'
+apply from: "$project.rootDir/tools/script-git-version.gradle"
 
 android {
-    signingConfigs {
+    /*signingConfigs {
         release {
             keyAlias 'SHIbTMainDevelopmentKey'
             keyPassword 'MusH210RooM'
@@ -14,13 +15,15 @@ android {
             storeFile file('F:/Android/DEVELOPMENT/KeyStore/Android Key Store.jks')
             storePassword 'MusH210RooM'
         }
-    }
+    }*/
     compileSdkVersion 27
     defaultConfig {
         applicationId "uk.co.shibt.digitalwatch"
         targetSdkVersion 27
-        versionCode 1
-        versionName '1.5'
+        versionCode gitVersionCode
+        versionName gitVersionName
+        //versionCode 1
+        //versionName '1.5'
         multiDexEnabled true
     }
     buildTypes {
@@ -39,14 +42,20 @@ android {
         debug {
             versionNameSuffix "-dev"
             applicationIdSuffix '.debug'
+            applicationVariants.all { variant ->
+                variant.outputs.all {
+                    def date = new Date()
+                    def formattedDate = date.format('yyyyMMddHHmmss')
+                    outputFileName = "SHIbT-digitalWatch-${versionName}-${formattedDate}.apk"
+                }
 //            signingConfig signingConfigs.debug
+            }
         }
     }
     flavorDimensions "main"
     productFlavors {
         dev {
             targetSdkVersion 27
-            versionCode 1
             applicationId 'uk.co.shibt.digitalWatch'
         }
         main {

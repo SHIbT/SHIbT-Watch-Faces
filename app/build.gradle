@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
+    /*signingConfigs {
         release {
             keyAlias 'SHIbTMainDevelopmentKey'
             keyPassword 'MusH210RooM'
@@ -14,7 +14,7 @@ android {
             storeFile file('F:/Android/DEVELOPMENT/KeyStore/Android Key Store.jks')
             storePassword 'MusH210RooM'
         }
-    }
+    }*/
     compileSdkVersion 27
     defaultConfig {
         applicationId "uk.co.shibt.shibtsimpleanaloguewatchface"
