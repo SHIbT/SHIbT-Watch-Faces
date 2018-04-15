@@ -22,35 +22,19 @@ import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Digital watch face with seconds. In ambient mode, the seconds aren't displayed. On devices with
- * low-bit ambient mode, the text is drawn without anti-aliasing in ambient mode.
- * <p>
- * Important Note: Because watch face apps do not have a default Activity in
- * their project, you will need to set your Configurations to
- * "Do not launch Activity" for both the Wear and/or Application modules. If you
- * are unsure how to do this, please review the "Run Starter project" section
- * in the Google Watch Face Code Lab:
- * https://codelabs.developers.google.com/codelabs/watchface/index.html#0
- */
 public class digitalWF2 extends CanvasWatchFaceService {
     private static final int BACKGROUND_COMPLICATION_ID = 0;
 
-    private static final Typeface NORMAL_TYPEFACE =
-            Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
     private static final Typeface MONOTYPE = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL);
     private static final int TOP_COMPLICATION_ID = 100;
     private static final int BOTTOM_COMPLICATION_ID = 101;
@@ -60,8 +44,8 @@ public class digitalWF2 extends CanvasWatchFaceService {
             BACKGROUND_COMPLICATION_ID,
             TOP_COMPLICATION_ID,
             BOTTOM_COMPLICATION_ID,
-            LEFT_COMPLICATION_ID,
-            RIGHT_COMPLICATION_ID
+            /*LEFT_COMPLICATION_ID,
+            RIGHT_COMPLICATION_ID*/
     };
 
     public static class EnglishNumberToWords {
@@ -276,7 +260,6 @@ public class digitalWF2 extends CanvasWatchFaceService {
 
     private class Engine extends CanvasWatchFaceService.Engine {
 
-        private static final int SHADOW_RADIUS = 3;
         private static final int SMALL_RADIUS = 3;
         private static final int BIG_RADIUS = 6;
         private final Handler mUpdateTimeHandler = new EngineHandler(this);
@@ -296,12 +279,7 @@ public class digitalWF2 extends CanvasWatchFaceService {
          * Whether the display supports fewer bits for each color in ambient mode. When true, we
          * disable anti-aliasing in ambient mode.
          */
-        private SimpleDateFormat twelvehour;
-        private int layout;
-        int red = ContextCompat.getColor(getApplicationContext(), R.color.red);
         int drkGrey = ContextCompat.getColor(getApplicationContext(), R.color.drkGrey);
-        int green = ContextCompat.getColor(getApplicationContext(), R.color.green);
-        int yellow = ContextCompat.getColor(getApplicationContext(), R.color.yellow);
 
         private final BroadcastReceiver mBattReceiver = new BroadcastReceiver() {
             @Override
@@ -353,7 +331,6 @@ public class digitalWF2 extends CanvasWatchFaceService {
 
             Resources resources = digitalWF2.this.getResources();
             mYOffset = resources.getDimension(R.dimen.digital_y_offset);
-            //mBatteryLevelProgress = PBres.getLayout(resources.getResourceName(layout.progressBar));
 
             // Initializes background.
             mBackgroundPaint = new Paint();
@@ -745,15 +722,16 @@ public class digitalWF2 extends CanvasWatchFaceService {
 
             Paint p = new Paint();
 
-            String Hour = mAmbient
-                    ? String.format("%02d:%02d", mCalendar.get(Calendar.HOUR_OF_DAY),
+            /*String Hour = mAmbient
+                    ? String.format("%02d%02d", mCalendar.get(Calendar.HOUR_OF_DAY),
                     mCalendar.get(Calendar.MINUTE))
-                    : String.format("%02d", mCalendar.get(Calendar.HOUR_OF_DAY));
+                    : String.format("%02d%02d", mCalendar.get(Calendar.HOUR_OF_DAY),
+            mCalendar.get(Calendar.MINUTE));*/
 
 
-            //String Hour = String.format("%02d:%02d", mCalendar.get(Calendar.HOUR_OF_DAY),
-            //                    mCalendar.get(Calendar.MINUTE));
-            String Minute = String.format("%02d", mCalendar.get(Calendar.MINUTE));
+            String Hour = String.format("%02d%02d", mCalendar.get(Calendar.HOUR_OF_DAY),
+                    mCalendar.get(Calendar.MINUTE));
+            //String Minute = String.format("%02d", mCalendar.get(Calendar.MINUTE));
             String Second = String.format("%02d", mCalendar.get(Calendar.SECOND));
             int intSecond = Integer.parseInt(Second);
 
@@ -764,12 +742,12 @@ public class digitalWF2 extends CanvasWatchFaceService {
             mTextWidth = (int) p.measureText(Hour);
 
             if (!mAmbient) {
-                canvas.drawText(Hour, mCenterX - (mTextWidth * 4f),
+                canvas.drawText(Hour, mCenterX,
                         mCenterY + (mTextHeight / 2f), mTextPaint);
-                canvas.drawText(Minute, mCenterX + (mTextWidth * 4f), mCenterY + (mTextHeight / 2f), mTextPaint);
+                //canvas.drawText(Minute, mCenterX + (mTextWidth * 4f), mCenterY + (mTextHeight / 2f), mTextPaint);
                 //canvas.drawText(Second, mCenterX + (mTextWidth * 3f),
                 //        mCenterY + (mTextHeight / 2f), mTextPaints);
-                canvas.drawText(wordSeconds, mCenterX,
+                canvas.drawText(wordSeconds, mCenterX - (mTextWidth / 2f),
                         mCenterY + (mTextHeight + 5), mTextPaints);
             } else {
                 canvas.drawText(Hour, mCenterX, mCenterY + (mTextHeight / 2f), mTextPaint);
