@@ -1,32 +1,71 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'SHIbTMainDevelopmentKey'
+            keyPassword 'MusH210RooM'
+            storeFile file('F:/Android/DEVELOPMENT/KeyStore/Android Key Store.jks')
+            storePassword 'MusH210RooM'
+        }
+        debug {
+            keyAlias 'SHIbTMainDevelopmentKey'
+            keyPassword 'MusH210RooM'
+            storeFile file('F:/Android/DEVELOPMENT/KeyStore/Android Key Store.jks')
+            storePassword 'MusH210RooM'
+        }
+    }
     compileSdkVersion 27
-
-
     defaultConfig {
         applicationId "uk.co.shibt.digitalwatch"
-        minSdkVersion 26
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName '1.5'
         multiDexEnabled true
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.release
+            applicationVariants.all { variant ->
+                variant.outputs.all {
+                    def date = new Date()
+                    def formattedDate = date.format('yyyyMMddHHmmss')
+                    outputFileName = "SHIbT-digitalWatch-${versionName}-${formattedDate}.apk"
+                }
+            }
+        }
+        debug {
+            versionNameSuffix "-dev"
+            applicationIdSuffix '.debug'
+//            signingConfig signingConfigs.debug
         }
     }
+    flavorDimensions "main"
+    productFlavors {
+        dev {
+            targetSdkVersion 27
+            versionCode 1
+            applicationId 'uk.co.shibt.digitalWatch'
+        }
+        main {
+            applicationId "uk.co.shibt.digitalWatch"
+            minSdkVersion 25
+            targetSdkVersion 27
+        }
+    }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation 'com.android.support:wear:27.1.1'
     implementation 'com.google.android.support:wearable:2.3.0'
     implementation 'com.google.android.gms:play-services-wearable:15.0.0'
     implementation 'com.android.support:percent:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:palette-v7:27.1.1'
     compileOnly 'com.google.android.wearable:wearable:2.3.0'
 }

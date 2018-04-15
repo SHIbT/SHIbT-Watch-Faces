@@ -3,20 +3,32 @@
     package="uk.co.shibt.digitalwatch">
 
     <uses-feature android:name="android.hardware.type.watch" />
+    <uses-sdk
+        android:maxSdkVersion="27"
+        android:minSdkVersion="25"
+        android:targetSdkVersion="27" />
 
     <!-- Required to act as a custom watch face. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Required for complications to receive complication data and open the provider chooser. -->
     <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
+
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <uses-library
+            android:name="com.google.android.wearable"
+            android:required="false" />
 
         <service
             android:name=".digitalWF2"
@@ -32,6 +44,10 @@
                 android:name="com.google.android.wearable.watchface.preview_circular"
                 android:resource="@drawable/preview_digital_circular" />
 
+            <meta-data
+                android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
+                android:value="uk.co.shibt.digitalwatch.CONFIG_COMPLICATION" />
+
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
 
@@ -39,9 +55,51 @@
             </intent-filter>
         </service>
 
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+        <activity android:name="android.support.wearable.complications.ComplicationHelperActivity" />
+        <activity
+            android:name=".ComplicationConfigActivity"
+            android:label="@string/complication_config">
+            <intent-filter>
+                <action android:name="uk.co.shibt.digitalwatch.CONFIG_COMPLICATION" />
+
+                <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="IncrementingNumberComplicationProviderService"
+            android:icon="@drawable/icn_complications"
+            android:label="@string/complications_provider_incrementing_number"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="RANGED_VALUE,SHORT_TEXT,LONG_TEXT" />
+            <!--
+                        When your complication data provider is active, UPDATE_PERIOD_SECONDS specifies how
+                        often you want the system to check for updates to the data.
+
+                        In general, you want to manually trigger updates only when your complication data
+                        actually changes via ProviderUpdateRequester (check UpdateComplicationDataService.java
+                        for an example).
+
+                        If you do decide to use UPDATE_PERIOD_SECONDS, set the interval in the order of minutes.
+                        A good value might be 600 seconds (10 minutes) if you need updates pulled often.
+
+                        Also, remember that this is only a guidance for the system. Android Wear may update less
+                        frequently. -->
+
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="600" />
+        </service>
+
+        <receiver android:name="ComplicationToggleReceiver" />
+        <activity android:name="ColorSelectionActivity" />
     </application>
 
 </manifest>
