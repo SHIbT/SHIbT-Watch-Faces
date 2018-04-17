@@ -22,6 +22,7 @@ import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
@@ -38,14 +39,10 @@ public class digitalWF2 extends CanvasWatchFaceService {
     private static final Typeface MONOTYPE = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL);
     private static final int TOP_COMPLICATION_ID = 100;
     private static final int BOTTOM_COMPLICATION_ID = 101;
-    private static final int LEFT_COMPLICATION_ID = 102;
-    private static final int RIGHT_COMPLICATION_ID = 103;
     private static final int[] COMPLICATION_IDS = {
             BACKGROUND_COMPLICATION_ID,
             TOP_COMPLICATION_ID,
             BOTTOM_COMPLICATION_ID,
-            /*LEFT_COMPLICATION_ID,
-            RIGHT_COMPLICATION_ID*/
     };
 
     public static class EnglishNumberToWords {
@@ -163,23 +160,11 @@ public class digitalWF2 extends CanvasWatchFaceService {
                     ComplicationData.TYPE_LONG_TEXT,
                     ComplicationData.TYPE_LARGE_IMAGE
             },
-            { //2 Left
-                    ComplicationData.TYPE_RANGED_VALUE,
-                    ComplicationData.TYPE_ICON,
-                    ComplicationData.TYPE_SHORT_TEXT,
-                    ComplicationData.TYPE_SMALL_IMAGE
-            },
             { //3 Bottom
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
                     ComplicationData.TYPE_LONG_TEXT,
                     ComplicationData.TYPE_LARGE_IMAGE
-            },
-            { //4 Right
-                    ComplicationData.TYPE_RANGED_VALUE,
-                    ComplicationData.TYPE_ICON,
-                    ComplicationData.TYPE_SHORT_TEXT,
-                    ComplicationData.TYPE_SMALL_IMAGE
             },
     };
     /**
@@ -200,12 +185,8 @@ public class digitalWF2 extends CanvasWatchFaceService {
                 return BACKGROUND_COMPLICATION_ID;
             case TOP:
                 return TOP_COMPLICATION_ID;
-            case LEFT:
-                return LEFT_COMPLICATION_ID;
             case BOTTOM:
                 return BOTTOM_COMPLICATION_ID;
-            case RIGHT:
-                return RIGHT_COMPLICATION_ID;
             default:
                 return -1;
         }
@@ -222,12 +203,8 @@ public class digitalWF2 extends CanvasWatchFaceService {
                 return COMPLICATION_SUPPORTED_TYPES[0];
             case TOP:
                 return COMPLICATION_SUPPORTED_TYPES[1];
-            case LEFT:
-                return COMPLICATION_SUPPORTED_TYPES[2];
             case BOTTOM:
                 return COMPLICATION_SUPPORTED_TYPES[3];
-            case RIGHT:
-                return COMPLICATION_SUPPORTED_TYPES[4];
             default:
                 return new int[]{};
         }
@@ -301,8 +278,10 @@ public class digitalWF2 extends CanvasWatchFaceService {
                     mbattPaint.setColor(Color.parseColor(bl));
                 }
 
-                sweepAngle = 360 - (360 * lvl); // * 360);
-                //sweepAngleRev = 180 + (180 * lvl);
+                sweepAngle = 170 - (170 * lvl); // * 360);
+                Log.d(TAG, "SweepAngle: " + sweepAngle);
+                sweepAngleRev = (170 * lvl) - 170;
+                Log.d(TAG, "SweepAngle Rev:" + sweepAngleRev);
                 invalidate();
             }
         };
@@ -417,10 +396,6 @@ public class digitalWF2 extends CanvasWatchFaceService {
                         TOP_COMPLICATION_ID, topComplicationDrawable);
                 mComplicationDrawableSparseArray.put(
                         BOTTOM_COMPLICATION_ID, bottomComplicationDrawable);
-                mComplicationDrawableSparseArray.put(
-                        LEFT_COMPLICATION_ID, leftComplicationDrawable);
-                mComplicationDrawableSparseArray.put(
-                        RIGHT_COMPLICATION_ID, rightComplicationDrawable);
                 mComplicationDrawableSparseArray.put(
                         BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
 
@@ -580,28 +555,6 @@ public class digitalWF2 extends CanvasWatchFaceService {
                     mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
             topComplicationDrawable.setBounds(topBounds);
 
-            Rect leftBounds =
-                    new Rect(
-                            (horizontalOffset - 30),
-                            verticalOffset,
-                            ((horizontalOffset + sizeOfComplication) - 30),
-                            (verticalOffset + sizeOfComplication));
-
-            ComplicationDrawable leftComplicationDrawable =
-                    mComplicationDrawableSparseArray.get(LEFT_COMPLICATION_ID);
-            leftComplicationDrawable.setBounds(leftBounds);
-
-            Rect rightBounds =
-                    new Rect(
-                            ((midpointOfScreen + horizontalOffset) + 30),
-                            verticalOffset,
-                            ((midpointOfScreen + horizontalOffset + sizeOfComplication) + 30),
-                            (verticalOffset + sizeOfComplication));
-
-            ComplicationDrawable rightComplicationDrawable =
-                    mComplicationDrawableSparseArray.get(RIGHT_COMPLICATION_ID);
-            rightComplicationDrawable.setBounds(rightBounds);
-
             Rect bottomBounds =
                     new Rect(
                             (horizontalOffset + 50),
@@ -698,6 +651,8 @@ public class digitalWF2 extends CanvasWatchFaceService {
         }
 
         private void drawBackground(Canvas canvas){
+
+
             // Draw the background.
             if (isInAmbientMode()) {
                 canvas.drawColor(Color.BLACK);
@@ -721,14 +676,12 @@ public class digitalWF2 extends CanvasWatchFaceService {
 
         private void drawProgress(Canvas canvas) {
             if (!mAmbient) {
-                //canvas.drawCircle(mCenterX, mCenterY, battCircle, mbattPaint);
                 RectF rectF = new RectF(0 + SMALL_RADIUS, 0 + SMALL_RADIUS,
                         mWidth - SMALL_RADIUS, mHeight - SMALL_RADIUS);
-                //canvas.drawOval(rectF, mbattPaint);
                 canvas.drawArc(rectF, 280, 340, false, mbattPaint);
                 canvas.drawArc(rectF, 280, sweepAngle, true, mBattVoid);
                 canvas.drawText(String.valueOf(level), mCenterX, 20, mTextPaintxs);
-                //canvas.drawArc(rectF, 260, sweepAngleRev, true, mBattVoid);
+                canvas.drawArc(rectF, 260, sweepAngleRev, true, mBattVoid);
             }
         }
 

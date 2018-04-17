@@ -147,10 +147,10 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                 digitalWF2.getComplicationId(
                         ComplicationLocation.BACKGROUND);
 
-        mLeftComplicationId =
+        /*mLeftComplicationId =
                 digitalWF2.getComplicationId(ComplicationLocation.LEFT);
         mRightComplicationId =
-                digitalWF2.getComplicationId(ComplicationLocation.RIGHT);
+                digitalWF2.getComplicationId(ComplicationLocation.RIGHT);*/
         mTopComplicationId =
                 digitalWF2.getComplicationId(ComplicationLocation.TOP);
         mBottomComplicationId =
@@ -250,8 +250,8 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
 
     public enum ComplicationLocation {
         BACKGROUND,
-        LEFT,
-        RIGHT,
+        /*LEFT,
+        RIGHT,*/
         TOP,
         BOTTOM
     }
@@ -306,8 +306,6 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
         private View mWatchFaceHighlightPreviewView;
         private ImageView mWatchFaceBackgroundPreviewImageView;
 
-        private ImageView mLeftComplicationBackground;
-        private ImageView mRightComplicationBackground;
         private ImageView mTopComplicationBackground;
         private ImageView mBottomComplicationBackground;
 
@@ -325,21 +323,6 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
 
             mWatchFaceBackgroundPreviewImageView =
                     view.findViewById(R.id.watch_face_background);
-            /*mWatchFaceArmsAndTicksView = view.findViewById(R.id.watch_face_arms_and_ticks);
-
-            // In our case, just the second arm.
-            mWatchFaceHighlightPreviewView = view.findViewById(R.id.watch_face_highlight);
-*/
-            // Sets up left complication preview.
-            mLeftComplicationBackground =
-                    view.findViewById(R.id.left_complication_background);
-            mLeftComplication = view.findViewById(R.id.left_complication);
-            mLeftComplication.setOnClickListener(this);
-
-            mRightComplicationBackground =
-                    view.findViewById(R.id.right_complication_background);
-            mRightComplication = view.findViewById(R.id.right_complication);
-            mRightComplication.setOnClickListener(this);
 
             mTopComplicationBackground =
                     view.findViewById(R.id.top_complication_background);
@@ -355,13 +338,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
 
         @Override
         public void onClick(View view) {
-            if (view.equals(mLeftComplication)) {
-                Activity currentActivity = (Activity) view.getContext();
-                launchComplicationHelperActivity(currentActivity, ComplicationLocation.LEFT);
-            } else if (view.equals(mRightComplication)) {
-                Activity currentActivity = (Activity) view.getContext();
-                launchComplicationHelperActivity(currentActivity, ComplicationLocation.RIGHT);
-            } else if (view.equals(mTopComplication)) {
+            if (view.equals(mTopComplication)) {
                 Activity currentActivity = (Activity) view.getContext();
                 launchComplicationHelperActivity(currentActivity, ComplicationLocation.TOP);
             } else if (view.equals(mBottomComplication)) {
@@ -436,14 +413,6 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
         }
 
         public void setDefaultComplicationDrawable(int resourceId) {
-            /*Context context = mWatchFaceArmsAndTicksView.getContext();
-            mDefaultComplicationDrawable = context.getDrawable(resourceId);*/
-
-            mLeftComplication.setImageDrawable(mDefaultComplicationDrawable);
-            mLeftComplicationBackground.setVisibility(View.INVISIBLE);
-
-            mRightComplication.setImageDrawable(mDefaultComplicationDrawable);
-            mRightComplicationBackground.setVisibility(View.INVISIBLE);
 
             mTopComplication.setImageDrawable(mDefaultComplicationDrawable);
             mTopComplicationBackground.setVisibility(View.INVISIBLE);
@@ -490,12 +459,6 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                             .setColorFilter(backgroundColorFilter);
                 }
 
-            } else if (watchFaceComplicationId == mLeftComplicationId) {
-                updateComplicationView(complicationProviderInfo, mLeftComplication,
-                        mLeftComplicationBackground);
-            } else if (watchFaceComplicationId == mRightComplicationId) {
-                updateComplicationView(complicationProviderInfo, mRightComplication,
-                        mRightComplicationBackground);
             } else if (watchFaceComplicationId == mTopComplicationId) {
                 updateComplicationView(complicationProviderInfo, mTopComplication,
                         mTopComplicationBackground);
