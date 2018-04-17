@@ -265,14 +265,14 @@ public class digitalWF2 extends CanvasWatchFaceService {
         private final Handler mUpdateTimeHandler = new EngineHandler(this);
         private final Rect textBounds = new Rect();
         public int level, mTextPaintColor, mBackgroundPaintColor;
-        public float lvl, battCircle, sweepAngle, mWidth, mCenterX, mCenterY, mHeight, mXOffset, mYOffset;
+        public float lvl, battCircle, sweepAngle, sweepAngleRev, mWidth, mCenterX, mCenterY, mHeight, mXOffset, mYOffset;
         SharedPreferences mSharedPref;
 
         private Calendar mCalendar;
         private boolean mRegisteredTimeZoneReceiver = false;
         private boolean mMuteMode, mLowBitAmbient, mBurnInProtection, mAmbient;
         private boolean mRegisteredBattReceiver = false;
-        private Paint mbattPaint, mBackgroundPaint, mTextPaint, mTextPaintm, mTextPaints, mBattVoid;
+        private Paint mbattPaint, mBackgroundPaint, mTextPaint, mTextPaintm, mTextPaints, mTextPaintxs, mBattVoid;
         private SparseArray<ComplicationData> mActiveComplicationDataSparseArray;
         private SparseArray<ComplicationDrawable> mComplicationDrawableSparseArray;
         /**
@@ -302,6 +302,7 @@ public class digitalWF2 extends CanvasWatchFaceService {
                 }
 
                 sweepAngle = 360 - (360 * lvl); // * 360);
+                //sweepAngleRev = 180 + (180 * lvl);
                 invalidate();
             }
         };
@@ -357,6 +358,14 @@ public class digitalWF2 extends CanvasWatchFaceService {
             mTextPaints.setAntiAlias(true);
             mTextPaints.setTextAlign(Paint.Align.CENTER);
             mTextPaints.setColor(drkGrey);
+
+            mTextPaintxs = new Paint();
+            mTextPaintxs.setTypeface(MONOTYPE);
+            mTextPaintxs.setAntiAlias(true);
+            mTextPaintxs.setTextAlign(Paint.Align.CENTER);
+            mTextPaintxs.setColor(
+                    ContextCompat.getColor(getApplicationContext(), R.color.digital_text)
+            );
 
             mbattPaint = new Paint();
             mbattPaint.setStyle(Paint.Style.STROKE);
@@ -497,10 +506,13 @@ public class digitalWF2 extends CanvasWatchFaceService {
                     ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
             float textSizes = resources.getDimension(isRound
                     ? R.dimen.digital_min_text_size_round : R.dimen.digital_min_text_size);
+            float textSizexs = resources.getDimension(isRound
+                    ? R.dimen.digital_batt_text_size_round : R.dimen.digital_batt_text_size);
 
             mTextPaint.setTextSize(textSize);
             mTextPaintm.setTextSize(textSizes);
             mTextPaints.setTextSize(textSizes);
+            mTextPaintxs.setTextSize(textSizexs);
         }
 
         @Override
@@ -712,8 +724,11 @@ public class digitalWF2 extends CanvasWatchFaceService {
                 //canvas.drawCircle(mCenterX, mCenterY, battCircle, mbattPaint);
                 RectF rectF = new RectF(0 + SMALL_RADIUS, 0 + SMALL_RADIUS,
                         mWidth - SMALL_RADIUS, mHeight - SMALL_RADIUS);
-                canvas.drawOval(rectF, mbattPaint);
-                canvas.drawArc(rectF, 270, sweepAngle, true, mBattVoid);
+                //canvas.drawOval(rectF, mbattPaint);
+                canvas.drawArc(rectF, 280, 340, false, mbattPaint);
+                canvas.drawArc(rectF, 280, sweepAngle, true, mBattVoid);
+                canvas.drawText(String.valueOf(level), mCenterX, 20, mTextPaintxs);
+                //canvas.drawArc(rectF, 260, sweepAngleRev, true, mBattVoid);
             }
         }
 
@@ -722,16 +737,8 @@ public class digitalWF2 extends CanvasWatchFaceService {
 
             Paint p = new Paint();
 
-            /*String Hour = mAmbient
-                    ? String.format("%02d%02d", mCalendar.get(Calendar.HOUR_OF_DAY),
-                    mCalendar.get(Calendar.MINUTE))
-                    : String.format("%02d%02d", mCalendar.get(Calendar.HOUR_OF_DAY),
-            mCalendar.get(Calendar.MINUTE));*/
-
-
             String Hour = String.format("%02d%02d", mCalendar.get(Calendar.HOUR_OF_DAY),
                     mCalendar.get(Calendar.MINUTE));
-            //String Minute = String.format("%02d", mCalendar.get(Calendar.MINUTE));
             String Second = String.format("%02d", mCalendar.get(Calendar.SECOND));
             int intSecond = Integer.parseInt(Second);
 
@@ -744,9 +751,6 @@ public class digitalWF2 extends CanvasWatchFaceService {
             if (!mAmbient) {
                 canvas.drawText(Hour, mCenterX,
                         mCenterY + (mTextHeight / 2f), mTextPaint);
-                //canvas.drawText(Minute, mCenterX + (mTextWidth * 4f), mCenterY + (mTextHeight / 2f), mTextPaint);
-                //canvas.drawText(Second, mCenterX + (mTextWidth * 3f),
-                //        mCenterY + (mTextHeight / 2f), mTextPaints);
                 canvas.drawText(wordSeconds, mCenterX - (mTextWidth / 2f),
                         mCenterY + (mTextHeight + 5), mTextPaints);
             } else {

@@ -1,1 +1,1 @@
-include ':app', ':digitalwatch'
+include ':app', ':digitalwatch', ':timebywords'
