@@ -22,7 +22,6 @@ import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
@@ -278,10 +277,8 @@ public class digitalWF2 extends CanvasWatchFaceService {
                     mbattPaint.setColor(Color.parseColor(bl));
                 }
 
-                sweepAngle = 170 - (170 * lvl); // * 360);
-                Log.d(TAG, "SweepAngle: " + sweepAngle);
+                sweepAngle = 170 - (170 * lvl);
                 sweepAngleRev = (170 * lvl) - 170;
-                Log.d(TAG, "SweepAngle Rev:" + sweepAngleRev);
                 invalidate();
             }
         };
