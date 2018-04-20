@@ -38,6 +38,8 @@ public class digitalWF2 extends CanvasWatchFaceService {
     private static final Typeface MONOTYPE = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL);
     private static final int TOP_COMPLICATION_ID = 100;
     private static final int BOTTOM_COMPLICATION_ID = 101;
+    private static final int LEFT_COMPLICATION_ID = 102;
+    private static final int RIGHT_COMPLICATION_ID = 103;
     private static final int[] COMPLICATION_IDS = {
             BACKGROUND_COMPLICATION_ID,
             TOP_COMPLICATION_ID,
@@ -159,11 +161,23 @@ public class digitalWF2 extends CanvasWatchFaceService {
                     ComplicationData.TYPE_LONG_TEXT,
                     ComplicationData.TYPE_LARGE_IMAGE
             },
+            { //2 Left
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE
+            },
             { //3 Bottom
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
                     ComplicationData.TYPE_LONG_TEXT,
                     ComplicationData.TYPE_LARGE_IMAGE
+            },
+            { //4 Right
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE
             },
     };
     /**
@@ -184,8 +198,12 @@ public class digitalWF2 extends CanvasWatchFaceService {
                 return BACKGROUND_COMPLICATION_ID;
             case TOP:
                 return TOP_COMPLICATION_ID;
+            /*case LEFT:
+                return LEFT_COMPLICATION_ID;*/
             case BOTTOM:
                 return BOTTOM_COMPLICATION_ID;
+            /*case RIGHT:
+                return RIGHT_COMPLICATION_ID;*/
             default:
                 return -1;
         }
@@ -202,8 +220,12 @@ public class digitalWF2 extends CanvasWatchFaceService {
                 return COMPLICATION_SUPPORTED_TYPES[0];
             case TOP:
                 return COMPLICATION_SUPPORTED_TYPES[1];
+            /*case LEFT:
+                return COMPLICATION_SUPPORTED_TYPES[2];*/
             case BOTTOM:
                 return COMPLICATION_SUPPORTED_TYPES[3];
+            /*case RIGHT:
+                return COMPLICATION_SUPPORTED_TYPES[4];*/
             default:
                 return new int[]{};
         }
@@ -393,6 +415,10 @@ public class digitalWF2 extends CanvasWatchFaceService {
                         TOP_COMPLICATION_ID, topComplicationDrawable);
                 mComplicationDrawableSparseArray.put(
                         BOTTOM_COMPLICATION_ID, bottomComplicationDrawable);
+                mComplicationDrawableSparseArray.put(
+                        LEFT_COMPLICATION_ID, leftComplicationDrawable);
+                mComplicationDrawableSparseArray.put(
+                        RIGHT_COMPLICATION_ID, rightComplicationDrawable);
                 mComplicationDrawableSparseArray.put(
                         BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
 
@@ -677,7 +703,7 @@ public class digitalWF2 extends CanvasWatchFaceService {
                         mWidth - SMALL_RADIUS, mHeight - SMALL_RADIUS);
                 canvas.drawArc(rectF, 280, 340, false, mbattPaint);
                 canvas.drawArc(rectF, 280, sweepAngle, true, mBattVoid);
-                canvas.drawText(String.valueOf(level), mCenterX, 20, mTextPaintxs);
+                canvas.drawText(String.valueOf(level) + "%", mCenterX, 20, mTextPaintxs);
                 canvas.drawArc(rectF, 260, sweepAngleRev, true, mBattVoid);
             }
         }

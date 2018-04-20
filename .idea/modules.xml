@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/SHIbT-Watch-Faces.iml" filepath="$PROJECT_DIR$/SHIbT-Watch-Faces.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/digitalwatch/digitalwatch.iml" filepath="$PROJECT_DIR$/digitalwatch/digitalwatch.iml" />
       <module fileurl="file://$PROJECT_DIR$/simple-analogue-watch-face.iml" filepath="$PROJECT_DIR$/simple-analogue-watch-face.iml" />
